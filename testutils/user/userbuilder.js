@@ -46,7 +46,7 @@ export class UserBuilder {
 		return this
 	}
 	
-	getUser() {
+	build() {
 		return this.userObj
 	}
 }
