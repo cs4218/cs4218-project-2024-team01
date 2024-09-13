@@ -1,16 +1,17 @@
 const config = {
 	"testEnvironment": "jest-environment-node",
 	"transform": {
-		//   "^.+\\.jsx?$": "babel-jest"
+		// "^.+\\.js?$": "babel-jest"
 	},
 	"moduleNameMapper": {
 		"\\.(css|scss)$": "identity-obj-proxy"
 	},
 	"transformIgnorePatterns": [
+		'/node_modules/',
 		"/node_modules/(?!(styleMock\\.js)$)"
 	],
 	"setupFiles": [
-		"./setup.jest.js"
+		"./jest.setup.js"
 	],
 	setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
 	"testPathIgnorePatterns": ["./client"],

@@ -433,13 +433,13 @@ describe("Given that Test Controller is called", () => {
 			send: jest.fn(),
 			status: jest.fn().mockReturnThis()
 		}
-		
+
 		jest.clearAllMocks()
 	})
 	describe("Protected Routes Health check OK", () => {
 		test("Returns Protected Routes", async () => {
 			await testController(req, res)
-			
+
 			expect(res.status).toHaveBeenCalledWith(200)
 			expect(res.send).toHaveBeenCalledWith({
 				success: true,
@@ -449,7 +449,12 @@ describe("Given that Test Controller is called", () => {
 	})
 	describe("Protected Routes Health check FAILED", () => {
 		test("Returns Error Message", async () => {
-			res.send = jest.fn().mockRejectedValueOnce(new Error("Connection Failed"))
+			res = {
+				send: jest.fn(() => {
+					throw new Error('Connection Failed');
+				}),
+				status: jest.fn().mockReturnThis()
+			};
 			
 			await testController(req, res)
 			
