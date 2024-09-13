@@ -8,7 +8,7 @@ export class UserBuilder {
 			address: 'Test Address 345',
 			answer: 'Test answer',
 			password: 'password',
-			role: "test role"
+			role: 0
 		}
 	}
 	withName(name) {
