@@ -14,7 +14,7 @@ const config = {
 		"./jest.setup.js"
 	],
 	setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
-	"testPathIgnorePatterns": ["./controllers", "./client/src/_site"],
+	"testPathIgnorePatterns": ["./controllers", "./middlewares", "./client/src/_site"],
 	"testMatch": ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(test).[jt]s?(x)"]
 };
 
