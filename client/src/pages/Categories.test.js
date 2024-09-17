@@ -1,7 +1,7 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, waitFor, render, screen } from "@testing-library/react";
 import { test, jest } from "@jest/globals";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { MemoryRouter, Routes, Route, useNavigate } from "react-router-dom";
 import "@testing-library/jest-dom/extend-expect";
 import Categories from "./Categories";
 import useCategory from "../hooks/useCategory";
@@ -9,17 +9,13 @@ import slugify from "slugify";
 
 jest.mock("../hooks/useCategory");
 
-jest.mock("../context/auth", () => ({
-  useAuth: jest.fn(() => [null, jest.fn()]), // Mock useAuth hook to return null state and a mock function for setAuth
-}));
-
-jest.mock("../context/cart", () => ({
-  useCart: jest.fn(() => [null, jest.fn()]), // Mock useCart hook to return null state and a mock function
-}));
-
-jest.mock("../context/search", () => ({
-  useSearch: jest.fn(() => [{ keyword: "" }, jest.fn()]), // Mock useSearch hook to return null state and a mock function
-}));
+// Only test the component itself
+jest.mock("../components/Layout", () => ({ title, children }) => (
+  <>
+    <title>{title}</title>
+    <div>{children}</div>
+  </>
+));
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -39,9 +35,12 @@ describe("Category Component", () => {
 
     expect(useCategory).toBeCalled();
     expect(screen.getByText("All Categories")).toBeInTheDocument();
+
+    // No categories present to be clickable
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 
-  test("should render categories and links correctly", () => {
+  test("should render categories and links correctly", async () => {
     let categories = [
       {
         name: "category one",
@@ -62,21 +61,16 @@ describe("Category Component", () => {
         </Routes>
       </MemoryRouter>
     );
-
+     
     expect(useCategory).toBeCalled();
     expect(screen.getByText("All Categories")).toBeInTheDocument();
 
-    // Appears in the page itself and the navbar
-    const catOneLinks = screen.getAllByText("category one");
-    expect(catOneLinks.length).toBe(2);
-    catOneLinks.forEach((link) => {
-      expect(link).toHaveAttribute('href', "/category/category-one");
-    })
-
-    const catTwoLinks = screen.getAllByText("category two");
-    expect(catTwoLinks.length).toBe(2);
-    catTwoLinks.forEach((link) => {
-      expect(link).toHaveAttribute('href', "/category/category-two");
-    })
+    const catOne = screen.getByText("category one");
+    expect(catOne).toBeInTheDocument();
+    expect(catOne).toHaveAttribute('href', "/category/category-one");
+    
+    const catTwo = screen.getByText("category two");
+    expect(catTwo).toBeInTheDocument();
+    expect(catTwo).toHaveAttribute('href', "/category/category-two");
   });
 });
