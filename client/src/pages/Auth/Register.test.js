@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, fireEvent, waitFor} from '@testing-library/react';
 import axios from 'axios';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import {MemoryRouter, Routes, Route, useNavigate} from 'react-router-dom';
 import '@testing-library/jest-dom/extend-expect';
 import toast from 'react-hot-toast';
 import Register from './Register';
@@ -20,6 +20,12 @@ jest.mock('../../context/cart', () => ({
 
 jest.mock('../../context/search', () => ({
   useSearch: jest.fn(() => [{ keyword: '' }, jest.fn()]) // Mock useSearch hook to return null state and a mock function
+}));
+
+jest.mock('react-router-dom', () => ({
+	// Use original functionalities for other exports if needed
+	...jest.requireActual('react-router-dom'),
+	useNavigate: jest.fn(), // Mock useNavigate
 }));
 
 Object.defineProperty(window, 'localStorage', {
@@ -132,6 +138,7 @@ describe('Register Component', () => {
     
     await waitFor(() => expect(axios.post).toHaveBeenCalled());
     expect(toast.success).toHaveBeenCalledWith('Register Successfully, please login');
+		expect(useNavigate).toHaveBeenCalled()
   });
   
   it('should display error message on failed registration', async () => {
@@ -158,4 +165,96 @@ describe('Register Component', () => {
     await waitFor(() => expect(axios.post).toHaveBeenCalled());
     expect(toast.error).toHaveBeenCalledWith('Something went wrong');
   });
+	
+	const testCases = [
+		{
+			name: "",
+			email: "test123@example.com",
+			password: "password123",
+			phone: "123123123",
+			address: "Blk 123",
+			DOB: "2000-01-01",
+			answer: "123"
+		},
+		{
+			name: "testname",
+			email: "",
+			password: "password123",
+			phone: "123123123",
+			address: "Blk 123",
+			DOB: "2000-01-01",
+			answer: "123"
+		},
+		{
+			name: "testname",
+			email: "test123@example.com",
+			password: "",
+			phone: "123123123",
+			address: "Blk 123",
+			DOB: "2000-01-01",
+			answer: "123"
+		},
+		{
+			name: "testname",
+			email: "test123@example.com",
+			password: "password123",
+			phone: "",
+			address: "Blk 123",
+			DOB: "2000-01-01",
+			answer: "123"
+		},
+		{
+			name: "testname",
+			email: "test123@example.com",
+			password: "password123",
+			phone: "123123123",
+			address: "",
+			DOB: "2000-01-01",
+			answer: "123"
+		},
+		{
+			name: "testname",
+			email: "test123@example.com",
+			password: "password123",
+			phone: "123123123",
+			address: "Blk 123",
+			DOB: "",
+			answer: "123"
+		},
+		{
+			name: "testname",
+			email: "test123@example.com",
+			password: "password123",
+			phone: "123123123",
+			address: "Blk 123",
+			DOB: "2000-01-01",
+			answer: ""
+		}
+	];
+	
+	testCases.forEach(reqObj => {
+		it("should not allow form submission with empty fields", async () => {
+			const {getByText, getByPlaceholderText} = render(
+				<MemoryRouter initialEntries={['/register']}>
+					<Routes>
+						<Route path="/register" element={<Register/>}/>
+					</Routes>
+				</MemoryRouter>
+			);
+			
+			fireEvent.change(getByPlaceholderText('Enter Your Name'), {target: {value: reqObj.name}});
+			fireEvent.change(getByPlaceholderText('Enter Your Email'), {target: {value: reqObj.email}});
+			fireEvent.change(getByPlaceholderText('Enter Your Password'), {target: {value: reqObj.password}});
+			fireEvent.change(getByPlaceholderText('Enter Your Phone'), {target: {value: reqObj.phone}});
+			fireEvent.change(getByPlaceholderText('Enter Your Address'), {target: {value: reqObj.address}});
+			fireEvent.change(getByPlaceholderText('Enter Your DOB'), {target: {value: reqObj.DOB}});
+			fireEvent.change(getByPlaceholderText('What is Your Favorite sports'), {target: {value: reqObj.answer}});
+			
+			fireEvent.click(getByText('REGISTER'));
+			
+			await waitFor(() => expect(axios.post).toHaveBeenCalledTimes(0));
+			expect(toast.error).toHaveBeenCalledTimes(0)
+			expect(toast.success).toHaveBeenCalledTimes(0)
+		})
+	})
 });

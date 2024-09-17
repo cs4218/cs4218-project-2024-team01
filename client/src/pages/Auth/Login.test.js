@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, fireEvent, waitFor} from '@testing-library/react';
 import axios from 'axios';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import {MemoryRouter, Routes, Route, useNavigate} from 'react-router-dom';
 import '@testing-library/jest-dom/extend-expect';
 import toast from 'react-hot-toast';
 import Login from './Login';
@@ -20,6 +20,12 @@ jest.mock('../../context/cart', () => ({
 
 jest.mock('../../context/search', () => ({
   useSearch: jest.fn(() => [{ keyword: '' }, jest.fn()]) // Mock useSearch hook to return null state and a mock function
+}));
+
+jest.mock('react-router-dom', () => ({
+  // Use original functionalities for other exports if needed
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: jest.fn(), // Mock useNavigate
 }));
 
 Object.defineProperty(window, 'localStorage', {
@@ -86,12 +92,15 @@ describe('Login Component', () => {
   });
   
   it('should login the user successfully', async () => {
-    axios.post.mockResolvedValueOnce({
+    let res = {
       data: {
         success: true,
         user: { id: 1, name: 'John Doe', email: 'test@example.com' },
         token: 'mockToken'
       }
+    }
+    axios.post.mockResolvedValueOnce({
+      data: res.data
     });
     
     const { getByPlaceholderText, getByText } = render(
@@ -115,6 +124,8 @@ describe('Login Component', () => {
         color: 'white'
       }
     });
+    expect(localStorage.setItem).toHaveBeenCalledWith("auth", JSON.stringify(res.data))
+    expect(useNavigate).toHaveBeenCalled()
   });
   
   it('should display error message on failed login', async () => {
@@ -156,6 +167,8 @@ describe('Login Component', () => {
 			fireEvent.click(getByText('LOGIN'));
 			
 			await waitFor(() => expect(axios.post).toHaveBeenCalledTimes(0));
-		})
+      expect(toast.error).toHaveBeenCalledTimes(0)
+      expect(toast.success).toHaveBeenCalledTimes(0)
+    })
 	})
 });
