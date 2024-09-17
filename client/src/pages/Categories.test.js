@@ -1,7 +1,7 @@
 import React from "react";
-import { fireEvent, waitFor, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { test, jest } from "@jest/globals";
-import { MemoryRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { MemoryRouter, Routes, Route } from "react-router-dom";
 import "@testing-library/jest-dom/extend-expect";
 import Categories from "./Categories";
 import useCategory from "../hooks/useCategory";
