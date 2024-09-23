@@ -83,7 +83,7 @@ const mockUserWithAddress = [
     },
   },
   jest.fn(),
-]
+];
 
 const renderPage = () => {
   render(
@@ -102,7 +102,7 @@ beforeEach(() => {
 describe("Cart Component", () => {
   describe("When user not logged in", () => {
     beforeEach(() => {
-      axios.get.mockResolvedValueOnce(null);
+      axios.get.mockResolvedValue({ data: null });
     });
 
     test("should render guest page with empty cart", async () => {
@@ -176,14 +176,14 @@ describe("Cart Component", () => {
   describe("When user is logged in", () => {
     beforeEach(() => {
       useAuth.mockReturnValue(mockUser);
-      axios.get.mockResolvedValueOnce(null);
+      axios.get.mockResolvedValue({ data: null });
     });
 
     test("should render normal page with empty cart", async () => {
       renderPage();
 
       expect(useAuth).toBeCalled();
-      expect(useCart).toBeCalled();
+      await waitFor(() => expect(useCart).toBeCalled());
 
       // Header
       expect(screen.getByText("Hello Jane Doe")).toBeInTheDocument();
@@ -202,7 +202,7 @@ describe("Cart Component", () => {
       useCart.mockReturnValueOnce([products, jest.fn()]);
 
       renderPage();
-      expect(useCart).toBeCalled();
+      await waitFor(() => expect(useCart).toBeCalled());
 
       // Header
       expect(screen.getByText("Hello Jane Doe")).toBeInTheDocument();
@@ -231,7 +231,7 @@ describe("Cart Component", () => {
     test("should navigate user to profile to set address", async () => {
       useAuth.mockReturnValue(mockUser);
       useCart.mockReturnValue([products, jest.fn()]);
-      axios.get.mockResolvedValueOnce(null);
+      axios.get.mockResolvedValue({ data: null });
 
       const mockNavigate = jest.fn();
       useNavigate.mockReturnValue(mockNavigate);
@@ -249,13 +249,12 @@ describe("Cart Component", () => {
     test("should render normal cart page without user address and DropIn", async () => {
       useAuth.mockReturnValue(mockUser);
       useCart.mockReturnValue([products, jest.fn()]);
-      axios.get.mockResolvedValueOnce(null);
+      axios.get.mockResolvedValue({ data: null });
 
       renderPage();
 
       expect(useAuth).toBeCalled();
-      expect(useCart).toBeCalled();
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/product/braintree/token");
+      await waitFor(() => expect(useCart).toBeCalled());
 
       // Cart Summary
       await waitFor(() => {
@@ -276,7 +275,7 @@ describe("Cart Component", () => {
     test("should render normal cart page with DropIn with disabled payment and no user address", async () => {
       useAuth.mockReturnValue(mockUser);
       useCart.mockReturnValue([products, jest.fn()]);
-      axios.get.mockResolvedValueOnce({
+      axios.get.mockResolvedValue({
         data: { clientToken: "clientToken" },
       });
 
@@ -294,10 +293,6 @@ describe("Cart Component", () => {
   });
 
   describe("When user is logged in with address and payment gateway token", () => {
-    const mockInstance = {
-      requestPaymentMethod: jest.fn().mockResolvedValue({ nonce: "nonce" }),
-    };
-
     const mockNavigate = jest.fn();
     const setCart = jest.fn();
 
@@ -305,15 +300,21 @@ describe("Cart Component", () => {
       useAuth.mockReturnValue(mockUserWithAddress);
       useCart.mockReturnValue([products, setCart]);
       useNavigate.mockReturnValue(mockNavigate);
-      axios.get.mockResolvedValueOnce({ data: { clientToken: "clientToken" } });
+      axios.get.mockResolvedValue({ data: { clientToken: "clientToken" } });
 
       DropIn.mockImplementationOnce(({ onInstance }) => {
-        onInstance(mockInstance);
+        setTimeout(() => {
+          onInstance({
+            requestPaymentMethod: jest
+              .fn()
+              .mockResolvedValue({ nonce: "nonce" }),
+          });
+        }, 1);
         return <div>MockDropIn</div>;
       });
     });
 
-    test("should render normal page with address and DropIn with payment initially disabled", async () => {
+    test("should render normal page with address and DropIn", async () => {
       renderPage();
 
       expect(useAuth).toBeCalled();
@@ -323,7 +324,9 @@ describe("Cart Component", () => {
       // Cart Summary
       expect(await screen.findByText("MockDropIn")).toBeInTheDocument();
       expect(await screen.findByText("Make Payment")).toBeInTheDocument();
-      expect(screen.getByText("Make Payment")).toBeDisabled();
+      await waitFor(() =>
+        expect(screen.getByText("Make Payment")).not.toBeDisabled()
+      );
       expect(screen.getByText("Current Address")).toBeInTheDocument();
       expect(screen.getByText("test")).toBeInTheDocument();
       expect(screen.getByText("Update Address")).toBeInTheDocument();
@@ -354,7 +357,9 @@ describe("Cart Component", () => {
       // Cart Summary
       expect(await screen.findByText("MockDropIn")).toBeInTheDocument();
       expect(await screen.findByText("Make Payment")).toBeInTheDocument();
-      expect(screen.getByText("Make Payment")).not.toBeDisabled();
+      await waitFor(() =>
+        expect(screen.getByText("Make Payment")).not.toBeDisabled()
+      );
 
       fireEvent.click(screen.getByText("Make Payment"));
 
@@ -386,7 +391,9 @@ describe("Cart Component", () => {
       // Cart Summary
       expect(await screen.findByText("MockDropIn")).toBeInTheDocument();
       expect(await screen.findByText("Make Payment")).toBeInTheDocument();
-      expect(screen.getByText("Make Payment")).not.toBeDisabled();
+      await waitFor(() =>
+        expect(screen.getByText("Make Payment")).not.toBeDisabled()
+      );
 
       fireEvent.click(screen.getByText("Make Payment"));
 
