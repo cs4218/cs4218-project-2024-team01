@@ -5,6 +5,7 @@ import {MemoryRouter, Routes, Route, useNavigate} from 'react-router-dom';
 import '@testing-library/jest-dom/extend-expect';
 import toast from 'react-hot-toast';
 import Register from './Register';
+import { RegisterFormBuilder } from '../../testutils/register/registerFormBuilder';
 
 // Mocking axios.post
 jest.mock('axios');
@@ -167,69 +168,13 @@ describe('Register Component', () => {
   });
 	
 	const testCases = [
-		{
-			name: "",
-			email: "test123@example.com",
-			password: "password123",
-			phone: "123123123",
-			address: "Blk 123",
-			DOB: "2000-01-01",
-			answer: "123"
-		},
-		{
-			name: "testname",
-			email: "",
-			password: "password123",
-			phone: "123123123",
-			address: "Blk 123",
-			DOB: "2000-01-01",
-			answer: "123"
-		},
-		{
-			name: "testname",
-			email: "test123@example.com",
-			password: "",
-			phone: "123123123",
-			address: "Blk 123",
-			DOB: "2000-01-01",
-			answer: "123"
-		},
-		{
-			name: "testname",
-			email: "test123@example.com",
-			password: "password123",
-			phone: "",
-			address: "Blk 123",
-			DOB: "2000-01-01",
-			answer: "123"
-		},
-		{
-			name: "testname",
-			email: "test123@example.com",
-			password: "password123",
-			phone: "123123123",
-			address: "",
-			DOB: "2000-01-01",
-			answer: "123"
-		},
-		{
-			name: "testname",
-			email: "test123@example.com",
-			password: "password123",
-			phone: "123123123",
-			address: "Blk 123",
-			DOB: "",
-			answer: "123"
-		},
-		{
-			name: "testname",
-			email: "test123@example.com",
-			password: "password123",
-			phone: "123123123",
-			address: "Blk 123",
-			DOB: "2000-01-01",
-			answer: ""
-		}
+		new RegisterFormBuilder().withName("").build(),
+		new RegisterFormBuilder().withEmail("").build(),
+		new RegisterFormBuilder().withPassword("").build(),
+		new RegisterFormBuilder().withPhone("").build(),
+		new RegisterFormBuilder().withAddress("").build(),
+		new RegisterFormBuilder().withDOB("").build(),
+		new RegisterFormBuilder().withAnswer("").build(),
 	];
 	
 	testCases.forEach(reqObj => {

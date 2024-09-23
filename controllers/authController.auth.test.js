@@ -83,84 +83,48 @@ describe('Given that Register controller is called', () => {
 		})
 	})
 	
+	let pairwiseTestCasesRegisterController = [{
+		testCase: "Name empty",
+		body: new UserBuilder().withName(null).withPassword(null).withPhone(null).build(),
+		expected: "Name is Required"
+	},{
+		testCase: "Email empty",
+		body: new UserBuilder().withEmail(null).withAddress(null).build(),
+		expected: "Email is Required"
+	}, {
+		testCase: "Password empty",
+		body: new UserBuilder().withPassword(null).withAnswer(null).build(),
+		expected: "Password is Required"
+	}, {
+		testCase: "Phone no empty",
+		body: new UserBuilder().withPhone(null).withAddress(null).build(),
+		expected: "Phone no is Required"
+	}, {
+		testCase: "Address empty",
+		body: new UserBuilder().withAddress(null).withAnswer(null).build(),
+		expected: "Address is Required"
+	}, {
+		testCase: "Answer empty",
+		body: new UserBuilder().withAnswer(null).build(),
+		expected: "Answer is Required"
+	}, {
+		testCase: "Name is empty",
+		body: new UserBuilder().withName(null).withEmail(null).build(),
+		expected: "Name is Required"
+	}]
 	describe('Receives invalid form', () => {
 		beforeEach(() => fillRegisterUserFormAndMockResponse(false))
-		describe("Given name is empty", () => {
-			test("Returns message that name is required", async () => {
-				await registerController(req, res)
-				
-				expect(res.send).toHaveBeenCalledWith({
-					message: "Name is Required"
-				})
-			})
-		})
 		
-		describe("Given Email is empty", () => {
-			test("Returns message that email is required", async () => {
-				req.body.name = "test123"
+		pairwiseTestCasesRegisterController.forEach(tc => {
+			const {testCase, body, expected} = tc
+			test(testCase, async () => {
+				req.body = body
 				
 				await registerController(req, res)
 				
+				expect(res.status).toHaveBeenCalledWith(400)
 				expect(res.send).toHaveBeenCalledWith({
-					message: "Email is Required"
-				})
-			})
-		})
-		
-		describe("Given Password is empty", () => {
-			test("Returns message that password is required", async () => {
-				req.body.name = "test123"
-				req.body.email = "test123@example.com"
-				
-				await registerController(req, res)
-				
-				expect(res.send).toHaveBeenCalledWith({
-					message: "Password is Required"
-				})
-			})
-		})
-		
-		describe("Given Phone no is empty", () => {
-			test("Returns message that phone no is required", async () => {
-				req.body.name = "test123"
-				req.body.email = "test123@example.com"
-				req.body.password = "testPassword"
-				
-				await registerController(req, res)
-				
-				expect(res.send).toHaveBeenCalledWith({
-					message: "Phone no is Required"
-				})
-			})
-		})
-		
-		describe("Given address is empty", () => {
-			test("Returns message that address is required", async () => {
-				req.body.name = "test123"
-				req.body.email = "test123@example.com"
-				req.body.password = "testPassword"
-				req.body.phone = "12345678"
-				
-				await registerController(req, res)
-				
-				expect(res.send).toHaveBeenCalledWith({
-					message: "Address is Required"
-				})
-			})
-		})
-		
-		describe("Given Answer is empty", () => {
-			test("Returns message that answer is required", async () => {
-				req.body.name = "test123"
-				req.body.email = "test123@example.com"
-				req.body.password = "testPassword"
-				req.body.phone = "12345678"
-				req.body.address = "example address"
-				
-				await registerController(req, res)
-				
-				expect(res.send).toHaveBeenCalledWith({
-					message: "Answer is Required"
+					error: expected
 				})
 			})
 		})
@@ -284,6 +248,7 @@ describe("Given that Login controller is called", () => {
 		describe("Given email is empty",  () => {
 			test("Returns Invalid email or password", async () => {
 				req.body.email = null
+				req.body.password = "password123"
 				
 				await loginController(req, res)
 				
