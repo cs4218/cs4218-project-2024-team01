@@ -21,7 +21,7 @@ beforeEach(() => {
   };
 
   jest.clearAllMocks();
-})
+});
 
 describe("For Create Category Controller", () => {
   beforeEach(() => {
@@ -45,12 +45,14 @@ describe("For Create Category Controller", () => {
   describe("Given name exists", () => {
     test("Returns message that category already exists", async () => {
       req.body.name = "exists";
-      categoryModel.findOne = jest.fn().mockResolvedValueOnce({ name: "exists" });
+      categoryModel.findOne = jest
+        .fn()
+        .mockResolvedValueOnce({ name: "exists" });
       categoryModel.prototype.save = jest.fn();
 
       await createCategoryController(req, res);
 
-      expect(categoryModel.findOne).toHaveBeenCalledWith({name : "exists"})
+      expect(categoryModel.findOne).toHaveBeenCalledWith({ name: "exists" });
       expect(categoryModel.prototype.save).toBeCalledTimes(0);
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.send).toHaveBeenCalledWith({
@@ -76,7 +78,7 @@ describe("For Create Category Controller", () => {
 
       await createCategoryController(req, res);
 
-      expect(categoryModel.findOne).toBeCalledWith({name: "new category"});
+      expect(categoryModel.findOne).toBeCalledWith({ name: "new category" });
       expect(categoryModel.prototype.save).toBeCalled();
       expect(res.status).toHaveBeenCalledWith(201);
       expect(res.send).toHaveBeenCalledWith({
@@ -97,7 +99,7 @@ describe("For Create Category Controller", () => {
 
       await createCategoryController(req, res);
 
-      expect(categoryModel.findOne).toBeCalledWith({name: "new category"});
+      expect(categoryModel.findOne).toBeCalledWith({ name: "new category" });
       expect(categoryModel.prototype.save).toBeCalledTimes(0);
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.send).toHaveBeenCalledWith({
@@ -120,7 +122,7 @@ describe("For Create Category Controller", () => {
 
       await createCategoryController(req, res);
 
-      expect(categoryModel.findOne).toBeCalledWith({name: "new category"});
+      expect(categoryModel.findOne).toBeCalledWith({ name: "new category" });
       expect(categoryModel.prototype.save).toBeCalled();
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.send).toHaveBeenCalledWith({

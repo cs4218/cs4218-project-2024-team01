@@ -59,7 +59,7 @@ const categories = [
   },
 ];
 
-function generateProducts(n) {
+const generateProducts = (n) => {
   const products = [];
   for (let i = 1; i <= n; i++) {
     products.push({
@@ -72,7 +72,78 @@ function generateProducts(n) {
     });
   }
   return products;
-}
+};
+
+const renderPage = () => {
+  render(
+    <MemoryRouter initialEntries={["/"]}>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+      </Routes>
+    </MemoryRouter>
+  );
+};
+
+const mockGetResponse = (
+  url,
+  category,
+  products,
+  additionalProducts,
+  total
+) => {
+  switch (url) {
+    case "/api/v1/category/get-category":
+      return Promise.resolve({
+        data: { success: true, category },
+      });
+    case "/api/v1/product/product-list/1":
+      return Promise.resolve({ data: { products } });
+    case "/api/v1/product/product-list/2":
+      return Promise.resolve({ data: { products: additionalProducts } });
+    case "/api/v1/product/product-count":
+      return Promise.resolve({ data: { total } });
+    default:
+      return null;
+  }
+};
+
+const checkInitialAPIs = () => {
+  expect(axios.get).toHaveBeenCalledWith("/api/v1/category/get-category");
+  expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-list/1");
+  expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-count");
+};
+
+const checkExpectedProducts = (expectedProducts) => {
+  expectedProducts.forEach((prd) => {
+    expect(screen.getByText(prd.name)).toBeInTheDocument();
+    expect(screen.getByText(prd.description + "...")).toBeInTheDocument();
+    expect(screen.getByAltText(prd.name)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        prd.price.toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+        })
+      )
+    ).toBeInTheDocument();
+  });
+};
+
+const checkExcludedProducts = (excludedProducts) => {
+  excludedProducts.forEach((prd) => {
+    expect(screen.queryByText(prd.name)).not.toBeInTheDocument();
+    expect(screen.queryByText(prd.description + "...")).not.toBeInTheDocument();
+    expect(screen.queryByAltText(prd.name)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        prd.price.toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+        })
+      )
+    ).not.toBeInTheDocument();
+  });
+};
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -107,17 +178,8 @@ describe("Home Page component", () => {
     });
 
     test("should log error if any of the initial retrieval APIs fail", async () => {
-      render(
-        <MemoryRouter initialEntries={["/"]}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-          </Routes>
-        </MemoryRouter>
-      );
-
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/category/get-category");
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-list/1");
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-count");
+      renderPage();
+      checkInitialAPIs();
 
       await waitFor(() => expect(spy).toHaveBeenCalledTimes(3));
 
@@ -133,13 +195,7 @@ describe("Home Page component", () => {
     });
 
     test("should log error when filtering products fails", async () => {
-      render(
-        <MemoryRouter initialEntries={["/"]}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-          </Routes>
-        </MemoryRouter>
-      );
+      renderPage();
 
       expect(screen.getByLabelText("$0 to 19")).toBeInTheDocument();
       fireEvent.click(screen.getByLabelText("$0 to 19"));
@@ -180,13 +236,7 @@ describe("Home Page component", () => {
         }
       });
 
-      render(
-        <MemoryRouter initialEntries={["/"]}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-          </Routes>
-        </MemoryRouter>
-      );
+      renderPage();
 
       expect(await screen.findByText("Loadmore")).toBeInTheDocument();
       fireEvent.click(screen.getByText("Loadmore"));
@@ -202,40 +252,13 @@ describe("Home Page component", () => {
 
   describe("with no categories and products", () => {
     test("should render page correctly", async () => {
-      axios.get.mockImplementation((url) => {
-        switch (url) {
-          case "/api/v1/category/get-category":
-            return Promise.resolve({
-              data: { success: true, category: [] },
-            });
-          case "/api/v1/product/product-list/1":
-            return Promise.resolve({ data: { products: [] } });
-          case "/api/v1/product/product-count":
-            return Promise.resolve({ data: { total: 0 } });
-          default:
-            return null;
-        }
-      });
-
+      axios.get.mockImplementation((url) =>
+        mockGetResponse(url, [], [], [], 0)
+      );
       axios.post.mockResolvedValueOnce({ data: { products: [] } });
+      renderPage();
 
-      render(
-        <MemoryRouter initialEntries={["/"]}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-          </Routes>
-        </MemoryRouter>
-      );
-
-      await waitFor(() =>
-        expect(axios.get).toHaveBeenCalledWith("/api/v1/category/get-category")
-      );
-      await waitFor(() =>
-        expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-list/1")
-      );
-      await waitFor(() =>
-        expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-count")
-      );
+      await waitFor(() => checkInitialAPIs());
 
       // Banner and title
       expect(
@@ -270,35 +293,13 @@ describe("Home Page component", () => {
   describe("with 6 products and 2 categories", () => {
     test("should render page correctly with no load more button", async () => {
       const products = generateProducts(6);
-
-      axios.get.mockImplementation((url) => {
-        switch (url) {
-          case "/api/v1/category/get-category":
-            return Promise.resolve({
-              data: { success: true, category: categories },
-            });
-          case "/api/v1/product/product-list/1":
-            return Promise.resolve({ data: { products } });
-          case "/api/v1/product/product-count":
-            return Promise.resolve({ data: { total: products.length } });
-          default:
-            return null;
-        }
-      });
-
+      axios.get.mockImplementation((url) =>
+        mockGetResponse(url, categories, products, [], products.length)
+      );
       axios.post.mockResolvedValue({ data: { products: [] } });
 
-      render(
-        <MemoryRouter initialEntries={["/"]}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-          </Routes>
-        </MemoryRouter>
-      );
-
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/category/get-category");
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-list/1");
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-count");
+      renderPage();
+      checkInitialAPIs();
 
       // Banner and title
       expect(
@@ -325,14 +326,7 @@ describe("Home Page component", () => {
 
       // Products
       expect(screen.getByText("All Products")).toBeInTheDocument();
-      await waitFor(() =>
-        products.forEach((prd) => {
-          expect(screen.getByText(prd.name)).toBeInTheDocument();
-          expect(screen.getByText(prd.description + "...")).toBeInTheDocument();
-          expect(screen.getByAltText(prd.name)).toBeInTheDocument();
-          expect(screen.getByText(`$${prd.price}.00`)).toBeInTheDocument();
-        })
-      );
+      await waitFor(() => checkExpectedProducts(products));
 
       expect(screen.getAllByText("More Details").length).toBe(6);
       expect(screen.getAllByText("ADD TO CART").length).toBe(6);
@@ -343,40 +337,22 @@ describe("Home Page component", () => {
   describe("with 7 products and 2 categories", () => {
     const products = generateProducts(7);
     beforeEach(() => {
-      axios.get.mockImplementation((url) => {
-        switch (url) {
-          case "/api/v1/category/get-category":
-            return Promise.resolve({
-              data: { success: true, category: categories },
-            });
-          case "/api/v1/product/product-list/1":
-            return Promise.resolve({
-              data: { products: products.slice(0, 6) },
-            });
-          case "/api/v1/product/product-list/2":
-            return Promise.resolve({ data: { products: [products[6]] } });
-          case "/api/v1/product/product-count":
-            return Promise.resolve({ data: { total: products.length } });
-          default:
-            return null;
-        }
-      });
+      axios.get.mockImplementation((url) =>
+        mockGetResponse(
+          url,
+          categories,
+          products.slice(0, 6),
+          [products[6]],
+          products.length
+        )
+      );
 
       axios.post.mockResolvedValue({ data: { products: [] } });
     });
 
     test("should render page correctly with load more button", async () => {
-      render(
-        <MemoryRouter initialEntries={["/"]}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-          </Routes>
-        </MemoryRouter>
-      );
-
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/category/get-category");
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-list/1");
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-count");
+      renderPage();
+      checkInitialAPIs();
 
       // Banner and title
       expect(
@@ -403,23 +379,8 @@ describe("Home Page component", () => {
 
       // Products
       expect(screen.getByText("All Products")).toBeInTheDocument();
-      await waitFor(() =>
-        products.slice(0, 6).forEach((prd) => {
-          expect(screen.getByText(prd.name)).toBeInTheDocument();
-          expect(screen.getByText(prd.description + "...")).toBeInTheDocument();
-          expect(screen.getByAltText(prd.name)).toBeInTheDocument();
-          expect(screen.getByText(`$${prd.price}.00`)).toBeInTheDocument();
-        })
-      );
-
-      expect(screen.queryByText(products[6].name)).not.toBeInTheDocument();
-      expect(
-        screen.queryByText(products[6].description + "...")
-      ).not.toBeInTheDocument();
-      expect(screen.queryByAltText(products[6].name)).not.toBeInTheDocument();
-      expect(
-        screen.queryByText(`$${products[6].price}.00`)
-      ).not.toBeInTheDocument();
+      await waitFor(() => checkExpectedProducts(products.slice(0, 6)));
+      await waitFor(() => checkExcludedProducts([products[6]]));
 
       expect(screen.getAllByText("More Details").length).toBe(6);
       expect(screen.getAllByText("ADD TO CART").length).toBe(6);
@@ -427,26 +388,10 @@ describe("Home Page component", () => {
     });
 
     test("should be able to load in more products", async () => {
-      render(
-        <MemoryRouter initialEntries={["/"]}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-          </Routes>
-        </MemoryRouter>
-      );
+      renderPage();
+      checkInitialAPIs();
 
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/category/get-category");
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-list/1");
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-count");
-
-      expect(screen.queryByText(products[6].name)).not.toBeInTheDocument();
-      expect(
-        screen.queryByText(products[6].description + "...")
-      ).not.toBeInTheDocument();
-      expect(screen.queryByAltText(products[6].name)).not.toBeInTheDocument();
-      expect(
-        screen.queryByText(`$${products[6].price}.00`)
-      ).not.toBeInTheDocument();
+      await waitFor(() => checkExcludedProducts([products[6]]));
 
       expect(await screen.findByText("Loadmore")).toBeInTheDocument();
       fireEvent.click(screen.getByText("Loadmore"));
@@ -454,13 +399,7 @@ describe("Home Page component", () => {
       await waitFor(() =>
         expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-list/2")
       );
-
-      expect(await screen.findByText(products[6].name)).toBeInTheDocument();
-      expect(
-        screen.getByText(products[6].description + "...")
-      ).toBeInTheDocument();
-      expect(screen.getByAltText(products[6].name)).toBeInTheDocument();
-      expect(screen.getByText(`$${products[6].price}.00`)).toBeInTheDocument();
+      await waitFor(() => checkExpectedProducts([products[6]]));
     });
   });
 
@@ -468,21 +407,9 @@ describe("Home Page component", () => {
     const products = generateProducts(1);
 
     beforeEach(() => {
-      axios.get.mockImplementation((url) => {
-        switch (url) {
-          case "/api/v1/category/get-category":
-            return Promise.resolve({
-              data: { success: true, category: categories },
-            });
-          case "/api/v1/product/product-list/1":
-            return Promise.resolve({ data: { products } });
-          case "/api/v1/product/product-count":
-            return Promise.resolve({ data: { total: products.length } });
-          default:
-            return null;
-        }
-      });
-
+      axios.get.mockImplementation((url) =>
+        mockGetResponse(url, categories, products, [], products.length)
+      );
       axios.post.mockResolvedValue({ data: { products: [] } });
     });
 
@@ -490,17 +417,8 @@ describe("Home Page component", () => {
       const setCart = jest.fn();
       useCart.mockReturnValue([[], setCart]);
 
-      render(
-        <MemoryRouter initialEntries={["/"]}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-          </Routes>
-        </MemoryRouter>
-      );
-
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/category/get-category");
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-list/1");
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-count");
+      renderPage();
+      checkInitialAPIs();
 
       expect(await screen.findByText("ADD TO CART")).toBeInTheDocument();
       fireEvent.click(screen.getAllByText("ADD TO CART")[0]);
@@ -519,17 +437,8 @@ describe("Home Page component", () => {
       const mockNavigate = jest.fn();
       useNavigate.mockReturnValue(mockNavigate);
 
-      render(
-        <MemoryRouter initialEntries={["/"]}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-          </Routes>
-        </MemoryRouter>
-      );
-
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/category/get-category");
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-list/1");
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-count");
+      renderPage();
+      checkInitialAPIs();
 
       expect(await screen.findByText("More Details")).toBeInTheDocument();
       fireEvent.click(screen.getAllByText("More Details")[0]);
@@ -542,13 +451,7 @@ describe("Home Page component", () => {
 
   describe("for filtering", () => {
     test("should be able to reset filters", async () => {
-      render(
-        <MemoryRouter initialEntries={["/"]}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-          </Routes>
-        </MemoryRouter>
-      );
+      renderPage();
 
       expect(screen.getByText("RESET FILTERS")).toBeInTheDocument();
 
@@ -569,43 +472,21 @@ describe("Home Page component", () => {
         category: "1",
       };
 
-      axios.get.mockImplementation((url) => {
-        switch (url) {
-          case "/api/v1/category/get-category":
-            return Promise.resolve({
-              data: { success: true, category: categories },
-            });
-          case "/api/v1/product/product-list/1":
-            return Promise.resolve({
-              data: { products: [overpricedProduct] },
-            });
-          case "/api/v1/product/product-count":
-            return Promise.resolve({
-              data: { total: [overpricedProduct].length },
-            });
-          default:
-            return null;
-        }
-      });
-
+      axios.get.mockImplementation((url) =>
+        mockGetResponse(
+          url,
+          categories,
+          [overpricedProduct],
+          [],
+          [overpricedProduct].length
+        )
+      );
       axios.post.mockResolvedValue({ data: { products: [] } });
 
-      render(
-        <MemoryRouter initialEntries={["/"]}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-          </Routes>
-        </MemoryRouter>
-      );
+      renderPage();
+      checkInitialAPIs();
 
-      expect(
-        await screen.findByText(overpricedProduct.name)
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(overpricedProduct.description + "...")
-      ).toBeInTheDocument();
-      expect(screen.getByAltText(overpricedProduct.name)).toBeInTheDocument();
-      expect(screen.getByText(`$10,000.00`)).toBeInTheDocument();
+      await waitFor(() => checkExpectedProducts([overpricedProduct]));
 
       expect(screen.getByLabelText("$100 or more")).toBeInTheDocument();
       fireEvent.click(screen.getByLabelText("$100 or more"));
@@ -622,38 +503,22 @@ describe("Home Page component", () => {
         )
       );
 
-      expect(
-        await screen.findByText(overpricedProduct.name)
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(overpricedProduct.description + "...")
-      ).toBeInTheDocument();
-      expect(screen.getByAltText(overpricedProduct.name)).toBeInTheDocument();
-      expect(screen.getByText(`$10,000.00`)).toBeInTheDocument();
+      await waitFor(() => checkExpectedProducts([overpricedProduct]));
     });
 
     /* This will fail as the load more button is dependent on total product count rather than 
     num of product left after filtering */
     test("should not display load more button after filtering 7 products to 1", async () => {
       const products = generateProducts(7);
-      axios.get.mockImplementation((url) => {
-        switch (url) {
-          case "/api/v1/category/get-category":
-            return Promise.resolve({
-              data: { success: true, category: categories },
-            });
-          case "/api/v1/product/product-list/1":
-            return Promise.resolve({
-              data: { products: products.slice(0, 6) },
-            });
-          case "/api/v1/product/product-list/2":
-            return Promise.resolve({ data: { products: [products[6]] } });
-          case "/api/v1/product/product-count":
-            return Promise.resolve({ data: { total: products.length } });
-          default:
-            return null;
-        }
-      });
+      axios.get.mockImplementation((url) =>
+        mockGetResponse(
+          url,
+          categories,
+          products.slice(0, 6),
+          [products[6]],
+          products.length
+        )
+      );
 
       axios.post.mockResolvedValue({
         data: {
@@ -663,13 +528,7 @@ describe("Home Page component", () => {
         },
       });
 
-      render(
-        <MemoryRouter initialEntries={["/"]}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-          </Routes>
-        </MemoryRouter>
-      );
+      renderPage();
 
       expect(await screen.findByLabelText("category one")).toBeInTheDocument();
       fireEvent.click(screen.getByLabelText("category one"));
@@ -687,20 +546,9 @@ describe("Home Page component", () => {
     which is unintended and leads to race conditions where the filter might not be successful */
     test("should be able to filter using categories only", async () => {
       const products = generateProducts(6);
-      axios.get.mockImplementation((url) => {
-        switch (url) {
-          case "/api/v1/category/get-category":
-            return Promise.resolve({
-              data: { success: true, category: categories },
-            });
-          case "/api/v1/product/product-list/1":
-            return Promise.resolve({ data: { products } });
-          case "/api/v1/product/product-count":
-            return Promise.resolve({ data: { total: products.length } });
-          default:
-            return null;
-        }
-      });
+      axios.get.mockImplementation((url) =>
+        mockGetResponse(url, categories, products, [], products.length)
+      );
 
       const expectedProducts = products.filter((prd) => prd.category === "1");
       const excludedProducts = products.filter(
@@ -711,17 +559,8 @@ describe("Home Page component", () => {
         data: { products: expectedProducts },
       });
 
-      render(
-        <MemoryRouter initialEntries={["/"]}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-          </Routes>
-        </MemoryRouter>
-      );
-
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/category/get-category");
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-list/1");
-      expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-count");
+      renderPage();
+      checkInitialAPIs();
       expect(axios.get).toHaveBeenCalledTimes(3);
 
       expect(await screen.findByLabelText("category one")).toBeInTheDocument();
@@ -743,27 +582,8 @@ describe("Home Page component", () => {
         )
       );
 
-      await waitFor(() =>
-        expectedProducts.forEach((prd) => {
-          expect(screen.getByText(prd.name)).toBeInTheDocument();
-          expect(screen.getByText(prd.description + "...")).toBeInTheDocument();
-          expect(screen.getByAltText(prd.name)).toBeInTheDocument();
-          expect(screen.getByText(`$${prd.price}.00`)).toBeInTheDocument();
-        })
-      );
-
-      await waitFor(() =>
-        excludedProducts.forEach((prd) => {
-          expect(screen.queryByText(prd.name)).not.toBeInTheDocument();
-          expect(
-            screen.queryByText(prd.description + "...")
-          ).not.toBeInTheDocument();
-          expect(screen.queryByAltText(prd.name)).not.toBeInTheDocument();
-          expect(
-            screen.queryByText(`$${prd.price}.00`)
-          ).not.toBeInTheDocument();
-        })
-      );
+      await waitFor(() => checkExpectedProducts(expectedProducts));
+      await waitFor(() => checkExcludedProducts(excludedProducts));
 
       // Should only be the initial 3 times, filtering should not call getAllProducts again
       await waitFor(() => expect(axios.get).toHaveBeenCalledTimes(3));
@@ -774,20 +594,9 @@ describe("Home Page component", () => {
     Prices.forEach((priceOpt) => {
       test(`should be able to filter using price range ${priceOpt.name} only`, async () => {
         const products = generateProducts(6);
-        axios.get.mockImplementation((url) => {
-          switch (url) {
-            case "/api/v1/category/get-category":
-              return Promise.resolve({
-                data: { success: true, category: categories },
-              });
-            case "/api/v1/product/product-list/1":
-              return Promise.resolve({ data: { products } });
-            case "/api/v1/product/product-count":
-              return Promise.resolve({ data: { total: products.length } });
-            default:
-              return null;
-          }
-        });
+        axios.get.mockImplementation((url) =>
+          mockGetResponse(url, categories, products, [], products.length)
+        );
 
         const expectedProducts = products.filter(
           (prd) =>
@@ -801,19 +610,8 @@ describe("Home Page component", () => {
           data: { products: expectedProducts },
         });
 
-        render(
-          <MemoryRouter initialEntries={["/"]}>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-            </Routes>
-          </MemoryRouter>
-        );
-
-        expect(axios.get).toHaveBeenCalledWith("/api/v1/category/get-category");
-        expect(axios.get).toHaveBeenCalledWith(
-          "/api/v1/product/product-list/1"
-        );
-        expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-count");
+        renderPage();
+        checkInitialAPIs();
         expect(axios.get).toHaveBeenCalledTimes(3);
 
         expect(screen.getByLabelText(priceOpt.name)).toBeInTheDocument();
@@ -832,29 +630,8 @@ describe("Home Page component", () => {
           )
         );
 
-        await waitFor(() =>
-          expectedProducts.forEach((prd) => {
-            expect(screen.getByText(prd.name)).toBeInTheDocument();
-            expect(
-              screen.getByText(prd.description + "...")
-            ).toBeInTheDocument();
-            expect(screen.getByAltText(prd.name)).toBeInTheDocument();
-            expect(screen.getByText(`$${prd.price}.00`)).toBeInTheDocument();
-          })
-        );
-
-        await waitFor(() =>
-          excludedProducts.forEach((prd) => {
-            expect(screen.queryByText(prd.name)).not.toBeInTheDocument();
-            expect(
-              screen.queryByText(prd.description + "...")
-            ).not.toBeInTheDocument();
-            expect(screen.queryByAltText(prd.name)).not.toBeInTheDocument();
-            expect(
-              screen.queryByText(`$${prd.price}.00`)
-            ).not.toBeInTheDocument();
-          })
-        );
+        await waitFor(() => checkExpectedProducts(expectedProducts));
+        await waitFor(() => checkExcludedProducts(excludedProducts));
 
         // Should only be the initial 3 times, filtering should not call getAllProducts again
         await waitFor(() => expect(axios.get).toHaveBeenCalledTimes(3));
@@ -866,20 +643,9 @@ describe("Home Page component", () => {
     Prices.forEach((priceOpt) =>
       test(`should be able to filter using categories and price range ${priceOpt.name}`, async () => {
         const products = generateProducts(6);
-        axios.get.mockImplementation((url) => {
-          switch (url) {
-            case "/api/v1/category/get-category":
-              return Promise.resolve({
-                data: { success: true, category: categories },
-              });
-            case "/api/v1/product/product-list/1":
-              return Promise.resolve({ data: { products } });
-            case "/api/v1/product/product-count":
-              return Promise.resolve({ data: { total: products.length } });
-            default:
-              return null;
-          }
-        });
+        axios.get.mockImplementation((url) =>
+          mockGetResponse(url, categories, products, [], products.length)
+        );
 
         const expectedProducts = products.filter(
           (prd) =>
@@ -896,19 +662,8 @@ describe("Home Page component", () => {
           data: { products: expectedProducts },
         });
 
-        render(
-          <MemoryRouter initialEntries={["/"]}>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-            </Routes>
-          </MemoryRouter>
-        );
-
-        expect(axios.get).toHaveBeenCalledWith("/api/v1/category/get-category");
-        expect(axios.get).toHaveBeenCalledWith(
-          "/api/v1/product/product-list/1"
-        );
-        expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-count");
+        renderPage();
+        checkInitialAPIs();
 
         expect(
           await screen.findByLabelText("category one")
@@ -941,29 +696,8 @@ describe("Home Page component", () => {
           radio: priceOpt.array,
         });
 
-        await waitFor(() =>
-          expectedProducts.forEach((prd) => {
-            expect(screen.getByText(prd.name)).toBeInTheDocument();
-            expect(
-              screen.getByText(prd.description + "...")
-            ).toBeInTheDocument();
-            expect(screen.getByAltText(prd.name)).toBeInTheDocument();
-            expect(screen.getByText(`$${prd.price}.00`)).toBeInTheDocument();
-          })
-        );
-
-        await waitFor(() =>
-          excludedProducts.forEach((prd) => {
-            expect(screen.queryByText(prd.name)).not.toBeInTheDocument();
-            expect(
-              screen.queryByText(prd.description + "...")
-            ).not.toBeInTheDocument();
-            expect(screen.queryByAltText(prd.name)).not.toBeInTheDocument();
-            expect(
-              screen.queryByText(`$${prd.price}.00`)
-            ).not.toBeInTheDocument();
-          })
-        );
+        await waitFor(() => checkExpectedProducts(expectedProducts));
+        await waitFor(() => checkExcludedProducts(excludedProducts));
       })
     );
   });

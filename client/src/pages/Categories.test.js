@@ -65,12 +65,9 @@ describe("Category Component", () => {
     expect(useCategory).toBeCalled();
     expect(screen.getByText("All Categories")).toBeInTheDocument();
 
-    const catOne = screen.getByText("category one");
-    expect(catOne).toBeInTheDocument();
-    expect(catOne).toHaveAttribute('href', "/category/category-one");
-    
-    const catTwo = screen.getByText("category two");
-    expect(catTwo).toBeInTheDocument();
-    expect(catTwo).toHaveAttribute('href', "/category/category-two");
+    expect(screen.getByText("category one")).toBeInTheDocument();
+    expect(screen.getByText("category one")).toHaveAttribute('href', "/category/category-one");
+    expect(screen.getByText("category two")).toBeInTheDocument();
+    expect(screen.getByText("category two")).toHaveAttribute('href', "/category/category-two");
   });
 });

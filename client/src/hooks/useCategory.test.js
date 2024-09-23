@@ -29,7 +29,7 @@ describe("For Use Category Hook", () => {
     await waitFor(() => expect(result.current).toEqual(categories));
   });
 
-  test("shoud log error when retrieve fails", async () => {
+  test("shoud log error when retrieving categories fails", async () => {
     const error = new Error("Failed to retrieve categories");
     axios.get.mockRejectedValueOnce(error);
 

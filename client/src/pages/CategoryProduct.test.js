@@ -28,16 +28,26 @@ jest.mock("react-router-dom", () => ({
   useParams: jest.fn(),
 }));
 
-beforeEach(() => {
-  jest.clearAllMocks();
-  useParams.mockReturnValueOnce({ slug: slugify("category one") });
-});
-
 const category = {
   _id: "1",
   name: "category one",
   slug: slugify("category one"),
 };
+
+const renderPage = () => {
+  render(
+    <MemoryRouter initialEntries={["/category/category-one"]}>
+      <Routes>
+        <Route path="/category/:slug" element={<CategoryProduct />} />
+      </Routes>
+    </MemoryRouter>
+  );
+}
+
+beforeEach(() => {
+  jest.clearAllMocks();
+  useParams.mockReturnValueOnce({ slug: slugify("category one") });
+});
 
 describe("Category Product component", () => {
   test("Should render category with no products", async () => {
@@ -48,13 +58,7 @@ describe("Category Product component", () => {
       },
     });
 
-    render(
-      <MemoryRouter initialEntries={["/category/category-one"]}>
-        <Routes>
-          <Route path="/category/:slug" element={<CategoryProduct />} />
-        </Routes>
-      </MemoryRouter>
-    );
+    renderPage();
 
     expect(useParams).toBeCalled();
     expect(axios.get).toHaveBeenCalledWith(
@@ -70,14 +74,14 @@ describe("Category Product component", () => {
   test("Should render category with products", async () => {
     const products = [
       {
-        _id: "2",
+        _id: "1",
         name: "product one",
         description: "this is product one",
         price: 10,
         category: "1"
       },
       {
-        _id: "3",
+        _id: "2",
         name: "product two",
         description: "this is product two",
         price: 20,
@@ -92,21 +96,15 @@ describe("Category Product component", () => {
       },
     });
 
-    render(
-      <MemoryRouter initialEntries={["/category/category-one"]}>
-        <Routes>
-          <Route path="/category/:slug" element={<CategoryProduct />} />
-        </Routes>
-      </MemoryRouter>
-    );
+    renderPage();
 
     expect(useParams).toBeCalled();
     expect(axios.get).toHaveBeenCalledWith(
       "/api/v1/product/product-category/category-one"
     );
 
-    await screen.findByText("Category - category one");
-    expect(screen.getByText("Category - category one")).toBeInTheDocument();
+    
+    expect(await screen.findByText("Category - category one")).toBeInTheDocument();
     expect(screen.getByText("2 result found")).toBeInTheDocument();
     expect(screen.getByText("product one")).toBeInTheDocument();
     expect(screen.getByText("this is product one...")).toBeInTheDocument();
@@ -123,7 +121,7 @@ describe("Category Product component", () => {
 
     const products = [
       {
-        _id: "2",
+        _id: "1",
         name: "product one",
         description: "this is product one",
         price: 10,
@@ -139,13 +137,7 @@ describe("Category Product component", () => {
       },
     });
 
-    render(
-      <MemoryRouter initialEntries={["/category/category-one"]}>
-        <Routes>
-          <Route path="/category/:slug" element={<CategoryProduct />} />
-        </Routes>
-      </MemoryRouter>
-    );
+    renderPage();
 
     expect(useParams).toBeCalled();
     expect(axios.get).toHaveBeenCalledWith(
@@ -153,7 +145,6 @@ describe("Category Product component", () => {
     );
 
     await screen.findByText("Category - category one");
-
     fireEvent.click(screen.getByText("More Details"));
 
     await waitFor(() =>
@@ -165,7 +156,7 @@ describe("Category Product component", () => {
     const longDescription = "tis is product one with a very long description to be tested";
     const products = [
       {
-        _id: "2",
+        _id: "1",
         name: "product one",
         description: longDescription,
         price: 10,
@@ -180,13 +171,7 @@ describe("Category Product component", () => {
       },
     });
 
-    render(
-      <MemoryRouter initialEntries={["/category/category-one"]}>
-        <Routes>
-          <Route path="/category/:slug" element={<CategoryProduct />} />
-        </Routes>
-      </MemoryRouter>
-    );
+    renderPage();
 
     expect(useParams).toBeCalled();
     expect(axios.get).toHaveBeenCalledWith(
@@ -204,7 +189,7 @@ describe("Category Product component", () => {
     const truncatedDescripton = "tis is product one with a very long description to be tested...";
     const products = [
       {
-        _id: "2",
+        _id: "1",
         name: "product one",
         description: exceededDescription,
         price: 10,
@@ -219,13 +204,7 @@ describe("Category Product component", () => {
       },
     });
 
-    render(
-      <MemoryRouter initialEntries={["/category/category-one"]}>
-        <Routes>
-          <Route path="/category/:slug" element={<CategoryProduct />} />
-        </Routes>
-      </MemoryRouter>
-    );
+    renderPage();
 
     expect(useParams).toBeCalled();
     expect(axios.get).toHaveBeenCalledWith(
@@ -236,5 +215,19 @@ describe("Category Product component", () => {
 
     await screen.findByText("Category - category one");
     expect(screen.getByText(truncatedDescripton)).toBeInTheDocument();
+  });
+
+  test("should log error if retrieving products fails", async () => {
+    const error = new Error("Failed to retrieve products");
+    axios.get.mockRejectedValueOnce(error);
+
+    const spy = jest.spyOn(console, "log").mockImplementationOnce(() => {});
+
+    renderPage();
+
+    expect(axios.get).toHaveBeenCalledWith(
+      "/api/v1/product/product-category/category-one"
+    );
+    await waitFor(() => expect(spy).toHaveBeenCalledWith(error));
   });
 });
