@@ -100,7 +100,7 @@ beforeEach(() => {
 });
 
 describe("Cart Component", () => {
-  describe("When user not logged in", () => {
+  describe("When user is not logged in", () => {
     beforeEach(() => {
       axios.get.mockResolvedValue({ data: null });
     });
@@ -264,10 +264,32 @@ describe("Cart Component", () => {
         expect(screen.queryByText("Make Payment")).not.toBeInTheDocument();
       });
 
+      expect(screen.queryByText("Current Address")).not.toBeInTheDocument();
       expect(screen.getByText("Update Address")).toBeInTheDocument();
-      expect(
-        screen.queryByText("Plase Login to checkout")
-      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe("When user is logged in with address but no payment gateway token", () => {
+    test("should render normal cart page with user address but no DropIn", async () => {
+      useAuth.mockReturnValue(mockUserWithAddress);
+      useCart.mockReturnValue([products, jest.fn()]);
+      axios.get.mockResolvedValue({ data: null });
+
+      renderPage();
+
+      expect(useAuth).toBeCalled();
+      expect(useCart).toBeCalled();
+
+      // Cart Summary
+      await waitFor(() => {
+        expect(screen.queryByText("MockDropIn")).not.toBeInTheDocument();
+      });
+      await waitFor(() => {
+        expect(screen.queryByText("Make Payment")).not.toBeInTheDocument();
+      });
+      expect(screen.getByText("Current Address")).toBeInTheDocument();
+      expect(screen.getByText("test")).toBeInTheDocument();
+      expect(screen.getByText("Update Address")).toBeInTheDocument();
     });
   });
 
@@ -289,6 +311,8 @@ describe("Cart Component", () => {
       expect(await screen.findByText("MockDropIn")).toBeInTheDocument();
       expect(await screen.findByText("Make Payment")).toBeInTheDocument();
       expect(screen.getByText("Make Payment")).toBeDisabled();
+      expect(screen.queryByText("Current Address")).not.toBeInTheDocument();
+      expect(screen.getByText("Update Address")).toBeInTheDocument();
     });
   });
 
