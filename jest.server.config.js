@@ -1,5 +1,5 @@
 const config = {
-	"testEnvironment": "jest-environment-node",
+	"testEnvironment": "jest-environment-jsdom",
 	"transform": {
 		// "^.+\\.js?$": "babel-jest"
 	},
