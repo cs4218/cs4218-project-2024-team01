@@ -1,11 +1,11 @@
 import {beforeEach, describe, jest, test, expect} from '@jest/globals'
 import JWT from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import mongoose from "mongoose";
 
 import userModel from "../models/userModel.js";
 import {forgotPasswordController, loginController, registerController, testController} from "./authController.js";
 import {comparePassword, hashPassword} from "../helpers/authHelper.js";
-import * as authHelper from "../helpers/authHelper.js";
 import {UserBuilder} from '../testutils/user/userbuilder.js'
 
 // Mock request and response
@@ -169,7 +169,6 @@ jest.mock('../helpers/authHelper');
 jest.mock('jsonwebtoken', () => ({
 	sign: jest.fn(async () => Promise.resolve("token"))
 }));
-jest.mock('bcrypt')
 
 describe("Given that Login controller is called", () => {
 	describe("Receives valid form", () => {
@@ -193,7 +192,8 @@ describe("Given that Login controller is called", () => {
 				test("User fails to login", async () => {
 					let userWithHashedPassword = new UserBuilder().withPassword("hashedPassword#").build()
 					userModel.findOne = jest.fn().mockResolvedValueOnce(userWithHashedPassword)
-					bcrypt.compare = jest.fn().mockResolvedValueOnce(false)
+					let bcryptSpy = jest.spyOn(bcrypt, "compare")
+					bcryptSpy.mockResolvedValueOnce(false)
 					
 					await loginController(req, res)
 					
@@ -209,7 +209,8 @@ describe("Given that Login controller is called", () => {
 				test("User logs in successfully", async () => {
 					let userWithHashedPassword = new UserBuilder().withPassword("hashedPassword#").build()
 					userModel.findOne = jest.fn().mockResolvedValueOnce(userWithHashedPassword)
-					bcrypt.compare = jest.fn().mockResolvedValueOnce(true)
+					let bcryptSpy = jest.spyOn(bcrypt, "compare")
+					bcryptSpy.mockResolvedValueOnce(true)
 					JWT.sign = jest.fn().mockResolvedValueOnce(jwtExamplePayload)
 					
 					await loginController(req, res)
@@ -325,13 +326,15 @@ describe("Given that Forgot Password controller is called", () => {
 			test("Returns password reset success", async () => {
 				let exampleUser = new UserBuilder().build()
 				userModel.findOne = jest.fn().mockResolvedValueOnce(exampleUser)
-				hashPassword.mockResolvedValueOnce("hashedPassword#")
-				jest.spyOn(userModel, "findByIdAndUpdate")
+				let bcryptSpy = jest.spyOn(bcrypt, "hash")
+				bcryptSpy.mockResolvedValueOnce("hashedPassword#")
+				let userModelSpy = jest.spyOn(userModel, "findByIdAndUpdate")
+				userModelSpy.mockResolvedValueOnce(null)
 				
 				await forgotPasswordController(req, res)
 				
-				expect(userModel.findByIdAndUpdate)
-					.toHaveBeenCalledWith(exampleUser._id, { password: "hashedPassword#" })
+				expect(userModelSpy)
+					.toHaveBeenCalledWith(new mongoose.Types.ObjectId(exampleUser._id)._id.toString(), {"password": "hashedPassword#"})
 				expect(res.status).toHaveBeenCalledWith(200)
 				expect(res.send).toHaveBeenCalledWith({
 					success: true,

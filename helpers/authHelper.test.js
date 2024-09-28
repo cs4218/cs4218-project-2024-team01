@@ -2,11 +2,13 @@ import {describe, jest, test, expect} from '@jest/globals'
 import bcrypt from 'bcrypt'
 import { hashPassword } from './authHelper';
 
-jest.mock('bcrypt')
-
 describe('hashPassword method called', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
   test('should return a hashed password', async () => {
-    bcrypt.hash = jest.fn().mockResolvedValue('hashedPassword#')
+    let bcryptSpy = jest.spyOn(bcrypt, 'hash')
+    bcryptSpy.mockResolvedValue('hashedPassword#')
     jest.spyOn(console, 'log')
 
     let actualHashedPw = await hashPassword('password')
@@ -17,7 +19,8 @@ describe('hashPassword method called', () => {
   });
 
   test('should return an error', async () => {
-    bcrypt.hash = jest.fn().mockRejectedValue('error')
+    let bcryptSpy = jest.spyOn(bcrypt, 'hash')
+    bcryptSpy.mockRejectedValue('error')
     jest.spyOn(console, 'log')
 
     let actualHashedPw = await hashPassword('password')
