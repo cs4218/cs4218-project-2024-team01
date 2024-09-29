@@ -1,11 +1,10 @@
 import {beforeEach, describe, jest, test, expect} from '@jest/globals'
-import JWT from "jsonwebtoken";
+import jsonwebtoken from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 
 import userModel from "../models/userModel.js";
 import {forgotPasswordController, loginController, registerController, testController} from "./authController.js";
-import {comparePassword, hashPassword} from "../helpers/authHelper.js";
 import {UserBuilder} from '../testutils/user/userbuilder.js'
 
 // Mock request and response
@@ -32,7 +31,7 @@ const fillRegisterUserFormAndMockResponse = (isValidRequest) => {
 	jest.clearAllMocks()
 }
 
-jest.mock("../models/userModel.js")
+// jest.mock("../models/userModel.js")
 
 describe('Given that Register controller is called', () => {
 	describe('Receives valid form', () => {
@@ -165,10 +164,8 @@ const fillLoginUserFormAndMockResponse = (isValidRequest) => {
 	jest.clearAllMocks()
 }
 
-jest.mock('../helpers/authHelper');
-jest.mock('jsonwebtoken', () => ({
-	sign: jest.fn(async () => Promise.resolve("token"))
-}));
+// jest.mock('../helpers/authHelper');
+// jest.mock('jsonwebtoken');
 
 describe("Given that Login controller is called", () => {
 	describe("Receives valid form", () => {
@@ -211,7 +208,7 @@ describe("Given that Login controller is called", () => {
 					userModel.findOne = jest.fn().mockResolvedValueOnce(userWithHashedPassword)
 					let bcryptSpy = jest.spyOn(bcrypt, "compare")
 					bcryptSpy.mockResolvedValueOnce(true)
-					JWT.sign = jest.fn().mockResolvedValueOnce(jwtExamplePayload)
+					jest.spyOn(jsonwebtoken, "sign").mockReturnValueOnce(jwtExamplePayload)
 					
 					await loginController(req, res)
 					
