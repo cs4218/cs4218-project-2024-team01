@@ -45,13 +45,12 @@ describe('Login Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(router, 'useNavigate').mockImplementation(() => navigate)
-  });
-  
-  it('renders login form', async () => {
     axios.get.mockResolvedValueOnce({
       data: null
     })
-
+  });
+  
+  it('renders login form', async () => {
     const { getByText, getByPlaceholderText } = render(
       <MemoryRouter initialEntries={['/login']}>
         <Routes>
@@ -69,10 +68,6 @@ describe('Login Component', () => {
     expect(getByPlaceholderText('Enter Your Password')).toBeInTheDocument();
   });
   it('inputs should be initially empty', async () => {
-    axios.get.mockResolvedValueOnce({
-      data: null
-    })
-
     const { getByText, getByPlaceholderText } = render(
       <MemoryRouter initialEntries={['/login']}>
         <Routes>
@@ -91,10 +86,6 @@ describe('Login Component', () => {
   });
   
   it('should allow typing email and password', async () => {
-    axios.get.mockResolvedValueOnce({
-      data: null
-    })
-
     const { getByText, getByPlaceholderText } = render(
       <MemoryRouter initialEntries={['/login']}>
         <Routes>
@@ -114,9 +105,6 @@ describe('Login Component', () => {
   });
   
   it('should login the user successfully', async () => {
-    axios.get.mockResolvedValueOnce({
-      data: null
-    })
     let res = {
       data: {
         success: true,
@@ -158,9 +146,6 @@ describe('Login Component', () => {
   });
 
   it ('should display error toast on failed login due to invalid credentials', async () => {
-    axios.get.mockResolvedValueOnce({
-      data: null
-    })
     let res = {
       data: { success: false, message: 'Invalid credentials' },
       status: 401
@@ -192,9 +177,6 @@ describe('Login Component', () => {
   });
   
   it('should display error message on failed login due to unhandled exception', async () => {
-    axios.get.mockResolvedValueOnce({
-      data: null
-    })
     axios.post.mockRejectedValueOnce('Unexpected Error');
     let consoleSpy = jest.spyOn(console, 'log');
     
@@ -226,9 +208,6 @@ describe('Login Component', () => {
 	]
 	cases.forEach((email, password) => {
 		it('should not allow form submission with empty fields', async () => {
-      axios.get.mockResolvedValueOnce({
-        data: null
-      })
 			const { getByPlaceholderText, getByText } = render(
 				<MemoryRouter initialEntries={['/login']}>
 					<Routes>
