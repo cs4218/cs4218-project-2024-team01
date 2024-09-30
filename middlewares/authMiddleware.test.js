@@ -3,6 +3,7 @@ import {UserBuilder} from "../testutils/user/userbuilder.js";
 import {isAdmin, requireSignIn} from "./authMiddleware.js";
 import jsonwebtoken from "jsonwebtoken";
 import userModel from "../models/userModel.js";
+import { afterEach } from "node:test";
 
 let res;
 let req;
@@ -11,7 +12,7 @@ const initializeRequestResponse = () => {
 	req = {
 		user: new UserBuilder().build(),
 		headers: {
-			authorization: {}
+			authorization: 'token'
 		}
 	}
 	res = {
@@ -25,32 +26,35 @@ const initializeRequestResponse = () => {
 
 describe("Given that the authMiddleware is called", () => {
 	beforeEach(() => initializeRequestResponse())
+	afterEach(() => {
+		next.mockRestore()
+	})
 	describe("Request routed to requireSignIn",  () => {
 		describe("Jwt Valid",  () => {
 			test("Routed to protected route", async () => {
 				let decodedUser = new UserBuilder().build()
-				jest.spyOn(jsonwebtoken, 'verify').mockResolvedValueOnce(decodedUser)
+				jest.spyOn(jsonwebtoken, 'verify').mockReturnValueOnce(decodedUser)
 				
 				await requireSignIn(req, res, next)
 				
-				expect(req.user).toBe(decodedUser)
+				expect(req.user).toEqual(decodedUser)
 				expect(next).toHaveBeenCalledTimes(1)
 			})
 		})
 		describe("Jwt invalid", () => {
 			test("Returns 403 UnAuthorized Access", async () => {
-				JWT.verify = jest.fn().mockRejectedValueOnce(new jsonwebtoken.JsonWebTokenError("Failed to decode JWT token"))
+				jest.spyOn(jsonwebtoken, 'verify').mockImplementationOnce(() => { throw new Error('Failed to decode JWT token'); });
 				const consoleLog = jest.spyOn(console, 'log');
 				
 				await requireSignIn(req, res, next)
 				
+				expect(next).not.toHaveBeenCalled()
+				expect(consoleLog).toHaveBeenCalledWith(new Error('Failed to decode JWT token'))
 				expect(res.status).toHaveBeenCalledWith(403)
 				expect(res.send).toHaveBeenCalledWith({
 					success: false,
 					message: "UnAuthorized Access",
 				})
-				expect(next).toHaveBeenCalledTimes(0)
-				expect(consoleLog).toHaveBeenCalledWith(new JsonWebTokenError("Failed to decode JWT token"))
 			})
 		})
 	})
