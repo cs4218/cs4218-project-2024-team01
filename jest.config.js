@@ -1,7 +1,7 @@
 const config = {
-	"testEnvironment": "jest-environment-node",
+	"testEnvironment": "jest-environment-jsdom",
 	"transform": {
-		//   "^.+\\.jsx?$": "babel-jest"
+		"^.+\\.jsx?$": "babel-jest"
 	},
 	"moduleNameMapper": {
 		"\\.(css|scss)$": "identity-obj-proxy"
@@ -13,7 +13,7 @@ const config = {
 		"./jest.setup.js"
 	],
 	setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
-	"testPathIgnorePatterns": ["./client"],
+	"testPathIgnorePatterns": ["./client/src/_site/"],
 	"testMatch": ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(test).[jt]s?(x)"]
 };
 
