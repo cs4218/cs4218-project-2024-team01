@@ -52,81 +52,81 @@ describe('Register Component', () => {
     })
   });
 	
-	// it('renders registration form', async () => {
-	// 	const {getByText, getByPlaceholderText } = render(
-	// 		<MemoryRouter initialEntries={['/register']}>
-	// 			<Routes>
-	// 				<Route path="/register" element={<Register />} />
-	// 			</Routes>
-	// 		</MemoryRouter>
-	// 	);
+	it('renders registration form', async () => {
+		const {getByText, getByPlaceholderText } = render(
+			<MemoryRouter initialEntries={['/register']}>
+				<Routes>
+					<Route path="/register" element={<Register />} />
+				</Routes>
+			</MemoryRouter>
+		);
 
-	// 	await act(async () => {
-  //     await new Promise((resolve) => setTimeout(resolve, 10));
-  //   });
+		await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1));
+    });
 		
-	// 	expect(getByText("REGISTER FORM")).toBeInTheDocument()
-	// 	expect(getByPlaceholderText('Enter Your Name')).toBeInTheDocument()
-	// 	expect(getByPlaceholderText('Enter Your Email')).toBeInTheDocument()
-	// 	expect(getByPlaceholderText('Enter Your Password')).toBeInTheDocument()
-	// 	expect(getByPlaceholderText('Enter Your Phone')).toBeInTheDocument()
-	// 	expect(getByPlaceholderText('Enter Your Address')).toBeInTheDocument()
-	// 	expect(getByPlaceholderText('Enter Your DOB')).toBeInTheDocument()
-	// 	expect(getByPlaceholderText('What is Your Favorite sports')).toBeInTheDocument()
-	// })
+		expect(getByText("REGISTER FORM")).toBeInTheDocument()
+		expect(getByPlaceholderText('Enter Your Name')).toBeInTheDocument()
+		expect(getByPlaceholderText('Enter Your Email')).toBeInTheDocument()
+		expect(getByPlaceholderText('Enter Your Password')).toBeInTheDocument()
+		expect(getByPlaceholderText('Enter Your Phone')).toBeInTheDocument()
+		expect(getByPlaceholderText('Enter Your Address')).toBeInTheDocument()
+		expect(getByPlaceholderText('Enter Your DOB')).toBeInTheDocument()
+		expect(getByPlaceholderText('What is Your Favorite sports')).toBeInTheDocument()
+	})
 	
-	// it('inputs should be initially empty', async () => {
-	// 	const {getByText, getByPlaceholderText } = render(
-	// 		<MemoryRouter initialEntries={['/register']}>
-	// 			<Routes>
-	// 				<Route path="/register" element={<Register />} />
-	// 			</Routes>
-	// 		</MemoryRouter>
-	// 	);
+	it('inputs should be initially empty', async () => {
+		const {getByText, getByPlaceholderText } = render(
+			<MemoryRouter initialEntries={['/register']}>
+				<Routes>
+					<Route path="/register" element={<Register />} />
+				</Routes>
+			</MemoryRouter>
+		);
 
-	// 	await act(async () => {
-  //     await new Promise((resolve) => setTimeout(resolve, 10));
-  //   });
+		await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1));
+    });
 		
-	// 	expect(getByText("REGISTER FORM")).toBeInTheDocument()
-	// 	expect(getByPlaceholderText('Enter Your Name').value).toBe("")
-	// 	expect(getByPlaceholderText('Enter Your Email').value).toBe("")
-	// 	expect(getByPlaceholderText('Enter Your Password').value).toBe("")
-	// 	expect(getByPlaceholderText('Enter Your Phone').value).toBe("")
-	// 	expect(getByPlaceholderText('Enter Your Address').value).toBe("")
-	// 	expect(getByPlaceholderText('Enter Your DOB').value).toBe("")
-	// 	expect(getByPlaceholderText('What is Your Favorite sports').value).toBe("")
-	// })
+		expect(getByText("REGISTER FORM")).toBeInTheDocument()
+		expect(getByPlaceholderText('Enter Your Name').value).toBe("")
+		expect(getByPlaceholderText('Enter Your Email').value).toBe("")
+		expect(getByPlaceholderText('Enter Your Password').value).toBe("")
+		expect(getByPlaceholderText('Enter Your Phone').value).toBe("")
+		expect(getByPlaceholderText('Enter Your Address').value).toBe("")
+		expect(getByPlaceholderText('Enter Your DOB').value).toBe("")
+		expect(getByPlaceholderText('What is Your Favorite sports').value).toBe("")
+	})
 	
-	// it('should allow typing registration fields', async () => {
-	// 	const {getByText, getByPlaceholderText } = render(
-	// 		<MemoryRouter initialEntries={['/register']}>
-	// 			<Routes>
-	// 				<Route path="/register" element={<Register />} />
-	// 			</Routes>
-	// 		</MemoryRouter>
-	// 	);
+	it('should allow typing registration fields', async () => {
+		const {getByText, getByPlaceholderText } = render(
+			<MemoryRouter initialEntries={['/register']}>
+				<Routes>
+					<Route path="/register" element={<Register />} />
+				</Routes>
+			</MemoryRouter>
+		);
 		
-	// 	fireEvent.change(getByPlaceholderText('Enter Your Name'), { target: { value: 'John Doe' } });
-	// 	fireEvent.change(getByPlaceholderText('Enter Your Email'), { target: { value: 'test@example.com' } });
-	// 	fireEvent.change(getByPlaceholderText('Enter Your Password'), { target: { value: 'password123' } });
-	// 	fireEvent.change(getByPlaceholderText('Enter Your Phone'), { target: { value: '1234567890' } });
-	// 	fireEvent.change(getByPlaceholderText('Enter Your Address'), { target: { value: '123 Street' } });
-	// 	fireEvent.change(getByPlaceholderText('Enter Your DOB'), { target: { value: '2000-01-01' } });
-	// 	fireEvent.change(getByPlaceholderText('What is Your Favorite sports'), { target: { value: 'Football' } });
+		fireEvent.change(getByPlaceholderText('Enter Your Name'), { target: { value: 'John Doe' } });
+		fireEvent.change(getByPlaceholderText('Enter Your Email'), { target: { value: 'test@example.com' } });
+		fireEvent.change(getByPlaceholderText('Enter Your Password'), { target: { value: 'password123' } });
+		fireEvent.change(getByPlaceholderText('Enter Your Phone'), { target: { value: '1234567890' } });
+		fireEvent.change(getByPlaceholderText('Enter Your Address'), { target: { value: '123 Street' } });
+		fireEvent.change(getByPlaceholderText('Enter Your DOB'), { target: { value: '2000-01-01' } });
+		fireEvent.change(getByPlaceholderText('What is Your Favorite sports'), { target: { value: 'Football' } });
 
-	// 	await act(async () => {
-  //     await new Promise((resolve) => setTimeout(resolve, 10));
-  //   });
+		await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1));
+    });
 		
-	// 	expect(getByPlaceholderText('Enter Your Name').value).toBe('John Doe');
-	// 	expect(getByPlaceholderText('Enter Your Email').value).toBe('test@example.com');
-	// 	expect(getByPlaceholderText('Enter Your Password').value).toBe('password123');
-	// 	expect(getByPlaceholderText('Enter Your Phone').value).toBe('1234567890');
-	// 	expect(getByPlaceholderText('Enter Your Address').value).toBe('123 Street');
-	// 	expect(getByPlaceholderText('Enter Your DOB').value).toBe('2000-01-01');
-	// 	expect(getByPlaceholderText('What is Your Favorite sports').value).toBe('Football');
-	// });
+		expect(getByPlaceholderText('Enter Your Name').value).toBe('John Doe');
+		expect(getByPlaceholderText('Enter Your Email').value).toBe('test@example.com');
+		expect(getByPlaceholderText('Enter Your Password').value).toBe('password123');
+		expect(getByPlaceholderText('Enter Your Phone').value).toBe('1234567890');
+		expect(getByPlaceholderText('Enter Your Address').value).toBe('123 Street');
+		expect(getByPlaceholderText('Enter Your DOB').value).toBe('2000-01-01');
+		expect(getByPlaceholderText('What is Your Favorite sports').value).toBe('Football');
+	});
   
   it('should register the user successfully', async () => {
     axios.post = jest.fn().mockResolvedValueOnce({ data: { success: true } });
@@ -150,7 +150,7 @@ describe('Register Component', () => {
     fireEvent.click(getByText('REGISTER'));
 
 		await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 1));
     });
     
     await waitFor(() => expect(axios.post).toHaveBeenCalled());
@@ -180,7 +180,7 @@ describe('Register Component', () => {
 		fireEvent.click(getByText('REGISTER'));
 
 		await act(async () => {
-			await new Promise((resolve) => setTimeout(resolve, 10));
+			await new Promise((resolve) => setTimeout(resolve, 1));
 		});
 
 		await waitFor(() => expect(axios.post).toHaveBeenCalled());
@@ -211,7 +211,7 @@ describe('Register Component', () => {
     fireEvent.click(getByText('REGISTER'));
 
 		await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 1));
     });
     
     await waitFor(() => expect(axios.post).toHaveBeenCalled());
@@ -220,17 +220,17 @@ describe('Register Component', () => {
   });
 	
 	const testCases = [
-		new RegisterFormBuilder().withName("").build(),
-		// new RegisterFormBuilder().withEmail("").build(),
-		// new RegisterFormBuilder().withPassword("").build(),
-		// new RegisterFormBuilder().withPhone("").build(),
-		// new RegisterFormBuilder().withAddress("").build(),
-		// new RegisterFormBuilder().withDOB("").build(),
-		// new RegisterFormBuilder().withAnswer("").build(),
+		{regForm: new RegisterFormBuilder().withName("").build(), testName: "No Name"},
+		{regForm: new RegisterFormBuilder().withEmail("").build(), testName: "No Email"},
+		{regForm: new RegisterFormBuilder().withPassword("").build(), testName: "No Password"},
+		{regForm: new RegisterFormBuilder().withPhone("").build(), testName: "No Phone"},
+		{regForm: new RegisterFormBuilder().withAddress("").build(), testName: "No Address"},
+		{regForm: new RegisterFormBuilder().withDOB("").build(), testName: "No DOB"},
+		{regForm: new RegisterFormBuilder().withAnswer("").build(), testName: "No Answer"},
 	];
 	
-	testCases.forEach(reqObj => {
-		it("should not allow form submission with empty fields", async () => {
+	testCases.forEach(({regForm, testName}) => {
+		it("should not allow form submission with empty fields " + testName, async () => {
 			const {getByText, getByPlaceholderText} = render(
 				<MemoryRouter initialEntries={['/register']}>
 					<Routes>
@@ -239,18 +239,18 @@ describe('Register Component', () => {
 				</MemoryRouter>
 			);
 			
-			fireEvent.change(getByPlaceholderText('Enter Your Name'), {target: {value: reqObj.name}});
-			fireEvent.change(getByPlaceholderText('Enter Your Email'), {target: {value: reqObj.email}});
-			fireEvent.change(getByPlaceholderText('Enter Your Password'), {target: {value: reqObj.password}});
-			fireEvent.change(getByPlaceholderText('Enter Your Phone'), {target: {value: reqObj.phone}});
-			fireEvent.change(getByPlaceholderText('Enter Your Address'), {target: {value: reqObj.address}});
-			fireEvent.change(getByPlaceholderText('Enter Your DOB'), {target: {value: reqObj.DOB}});
-			fireEvent.change(getByPlaceholderText('What is Your Favorite sports'), {target: {value: reqObj.answer}});
+			fireEvent.change(getByPlaceholderText('Enter Your Name'), {target: {value: regForm.name}});
+			fireEvent.change(getByPlaceholderText('Enter Your Email'), {target: {value: regForm.email}});
+			fireEvent.change(getByPlaceholderText('Enter Your Password'), {target: {value: regForm.password}});
+			fireEvent.change(getByPlaceholderText('Enter Your Phone'), {target: {value: regForm.phone}});
+			fireEvent.change(getByPlaceholderText('Enter Your Address'), {target: {value: regForm.address}});
+			fireEvent.change(getByPlaceholderText('Enter Your DOB'), {target: {value: regForm.DOB}});
+			fireEvent.change(getByPlaceholderText('What is Your Favorite sports'), {target: {value: regForm.answer}});
 			
 			fireEvent.click(getByText('REGISTER'));
 
 			await act(async () => {
-				await new Promise((resolve) => setTimeout(resolve, 10));
+				await new Promise((resolve) => setTimeout(resolve, 1));
 			});
 			
 			await waitFor(() => expect(axios.post).toHaveBeenCalledTimes(0));

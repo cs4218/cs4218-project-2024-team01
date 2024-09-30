@@ -50,59 +50,59 @@ describe('Login Component', () => {
     })
   });
   
-  // it('renders login form', async () => {
-  //   const { getByText, getByPlaceholderText } = render(
-  //     <MemoryRouter initialEntries={['/login']}>
-  //       <Routes>
-  //         <Route path="/login" element={<Login />} />
-  //       </Routes>
-  //     </MemoryRouter>
-  //   );
+  it('renders login form', async () => {
+    const { getByText, getByPlaceholderText } = render(
+      <MemoryRouter initialEntries={['/login']}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </MemoryRouter>
+    );
 
-  //   await act(async () => {
-  //     await new Promise((resolve) => setTimeout(resolve, 10));
-  //   });
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1));
+    });
     
-  //   expect(getByText('LOGIN FORM')).toBeInTheDocument();
-  //   expect(getByPlaceholderText('Enter Your Email')).toBeInTheDocument();
-  //   expect(getByPlaceholderText('Enter Your Password')).toBeInTheDocument();
-  // });
-  // it('inputs should be initially empty', async () => {
-  //   const { getByText, getByPlaceholderText } = render(
-  //     <MemoryRouter initialEntries={['/login']}>
-  //       <Routes>
-  //         <Route path="/login" element={<Login />} />
-  //       </Routes>
-  //     </MemoryRouter>
-  //   );
+    expect(getByText('LOGIN FORM')).toBeInTheDocument();
+    expect(getByPlaceholderText('Enter Your Email')).toBeInTheDocument();
+    expect(getByPlaceholderText('Enter Your Password')).toBeInTheDocument();
+  });
+  it('inputs should be initially empty', async () => {
+    const { getByText, getByPlaceholderText } = render(
+      <MemoryRouter initialEntries={['/login']}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </MemoryRouter>
+    );
 
-  //   await act(async () => {
-  //     await new Promise((resolve) => setTimeout(resolve, 10));
-  //   });
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    });
     
-  //   expect(getByText('LOGIN FORM')).toBeInTheDocument();
-  //   expect(getByPlaceholderText('Enter Your Email').value).toBe('');
-  //   expect(getByPlaceholderText('Enter Your Password').value).toBe('');
-  // });
+    expect(getByText('LOGIN FORM')).toBeInTheDocument();
+    expect(getByPlaceholderText('Enter Your Email').value).toBe('');
+    expect(getByPlaceholderText('Enter Your Password').value).toBe('');
+  });
   
-  // it('should allow typing email and password', async () => {
-  //   const { getByText, getByPlaceholderText } = render(
-  //     <MemoryRouter initialEntries={['/login']}>
-  //       <Routes>
-  //         <Route path="/login" element={<Login />} />
-  //       </Routes>
-  //     </MemoryRouter>
-  //   );
-  //   fireEvent.change(getByPlaceholderText('Enter Your Email'), { target: { value: 'test@example.com' } });
-  //   fireEvent.change(getByPlaceholderText('Enter Your Password'), { target: { value: 'password123' } });
+  it('should allow typing email and password', async () => {
+    const { getByText, getByPlaceholderText } = render(
+      <MemoryRouter initialEntries={['/login']}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </MemoryRouter>
+    );
+    fireEvent.change(getByPlaceholderText('Enter Your Email'), { target: { value: 'test@example.com' } });
+    fireEvent.change(getByPlaceholderText('Enter Your Password'), { target: { value: 'password123' } });
 
-  //   await act(async () => {
-  //     await new Promise((resolve) => setTimeout(resolve, 10));
-  //   });
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1));
+    });
 
-  //   expect(getByPlaceholderText('Enter Your Email').value).toBe('test@example.com');
-  //   expect(getByPlaceholderText('Enter Your Password').value).toBe('password123');
-  // });
+    expect(getByPlaceholderText('Enter Your Email').value).toBe('test@example.com');
+    expect(getByPlaceholderText('Enter Your Password').value).toBe('password123');
+  });
   
   it('should login the user successfully', async () => {
     let res = {
@@ -129,7 +129,7 @@ describe('Login Component', () => {
     fireEvent.change(getByPlaceholderText('Enter Your Password'), { target: { value: 'password123' } });
     fireEvent.click(getByText('LOGIN'));
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 1));
     });
     
     await waitFor(() => expect(axios.post).toHaveBeenCalled());
@@ -168,7 +168,7 @@ describe('Login Component', () => {
     fireEvent.change(getByPlaceholderText('Enter Your Password'), { target: { value: '123123' } });
     fireEvent.click(getByText('LOGIN'));
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 1));
     });
     
     await waitFor(() => expect(axios.post).toHaveBeenCalled());
@@ -192,7 +192,7 @@ describe('Login Component', () => {
     fireEvent.change(getByPlaceholderText('Enter Your Password'), { target: { value: 'password123' } });
     fireEvent.click(getByText('LOGIN'));
     await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 1));
     });
     
     await waitFor(() => expect(axios.post).toHaveBeenCalled());
@@ -200,14 +200,31 @@ describe('Login Component', () => {
     expect(consoleSpy).toHaveBeenCalledWith('Unexpected Error');
     expect(toast.error).toHaveBeenCalledWith('Something went wrong');
   });
+
+  it('should navigate to forgetPassword page when button is clicked', async () => {
+    const { getByText } = render(
+      <MemoryRouter initialEntries={['/login']}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    fireEvent.click(getByText('Forgot Password'));
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1));
+    });
+
+    expect(navigate).toHaveBeenCalledWith('/forgot-password');
+  })
 	
 	const cases = [
-		{ email: "test@example.com", password: "" },
-		// { email: "", password: "password123" },
-		// { email: "", password: "" }
+		{ email: "test@example.com", password: "", caseName: "empty password" },
+		{ email: "", password: "password123", caseName: "empty email" },
+		{ email: "", password: "", caseName: "empty email and password" }
 	]
-	cases.forEach((email, password) => {
-		it('should not allow form submission with empty fields', async () => {
+	cases.forEach(({email, password, caseName}) => {
+		it('should not allow form submission with empty fields ' + caseName, async () => {
 			const { getByPlaceholderText, getByText } = render(
 				<MemoryRouter initialEntries={['/login']}>
 					<Routes>
@@ -220,7 +237,7 @@ describe('Login Component', () => {
 			fireEvent.change(getByPlaceholderText('Enter Your Password'), { target: { value: password } });
 			fireEvent.click(getByText('LOGIN'));
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 10));
+        await new Promise((resolve) => setTimeout(resolve, 1));
       });
 			
 			await waitFor(() => expect(axios.post).toHaveBeenCalledTimes(0));
