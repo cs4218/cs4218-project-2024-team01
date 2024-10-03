@@ -73,7 +73,7 @@ describe("Profile Component", () => {
 
     });
 
-    it("should update the profile", async () => {
+    it("should update the full profile successfully", async () => {
 
         let updatedMockUser = {
             name: "Jane Doe",
@@ -128,6 +128,102 @@ describe("Profile Component", () => {
         expect(toast.success).toHaveBeenCalledWith("Profile Updated Successfully");
 
     });
+
+    it("should update the name, password and address of the user successfully", async () => {
+        let updatedMockUser = {
+            name: "Jane Doe",
+            email: mockUser.user.email,
+            password: "passw0rd1",
+            phone: mockUser.user.phone,
+            address: "456 Jurong Street 61"
+        }
+
+        axios.put.mockResolvedValueOnce({
+            data: {
+                success: true,
+                message: "Profile Updated SUccessfully",
+                updatedUser: updatedMockUser
+            }
+        });
+
+        localStorage.getItem.mockReturnValueOnce(JSON.stringify({
+            user: mockUser.user,
+        }));
+
+        const { getByText, getByPlaceholderText } = render(
+            <MemoryRouter initialEntries={["/dashboard/user/profile"]}>
+                <Routes>
+                    <Route path="/dashboard/user/profile" element={<Profile />} />
+                </Routes>
+            </MemoryRouter>
+        );
+
+        fireEvent.change(getByPlaceholderText('Enter Your Name'), {
+            target: { value: updatedMockUser.name }
+        });
+        fireEvent.change(getByPlaceholderText('Enter Your Address'), {
+            target: { value: updatedMockUser.address }
+        });
+        fireEvent.change(getByPlaceholderText('Enter Your Password'), {
+            target: { value: updatedMockUser.password }
+        });
+        fireEvent.click(getByText('UPDATE'));
+
+        await waitFor(() => {
+            expect(axios.put).toHaveBeenCalledTimes(1);
+            expect(axios.put).toHaveBeenCalledWith("/api/v1/auth/profile", updatedMockUser);
+        });
+
+        expect(toast.success).toHaveBeenCalledWith("Profile Updated Successfully");
+
+    });
+
+    it("should update the email and phone of the user successfully", async () => {
+        let updatedMockUser = {
+            name: mockUser.user.name,
+            email: "janedoe@gmail.com",
+            password: "",
+            phone: "987654321",
+            address: mockUser.user.address
+        }
+
+        axios.put.mockResolvedValueOnce({
+            data: {
+                success: true,
+                message: "Profile Updated SUccessfully",
+                updatedUser: updatedMockUser
+            }
+        });
+
+        localStorage.getItem.mockReturnValueOnce(JSON.stringify({
+            user: mockUser.user,
+        }));
+
+        const { getByText, getByPlaceholderText } = render(
+            <MemoryRouter initialEntries={["/dashboard/user/profile"]}>
+                <Routes>
+                    <Route path="/dashboard/user/profile" element={<Profile />} />
+                </Routes>
+            </MemoryRouter>
+        );
+
+        fireEvent.change(getByPlaceholderText('Enter Your Email'), {
+            target: { value: updatedMockUser.email }
+        });
+        fireEvent.change(getByPlaceholderText('Enter Your Phone'), {
+            target: { value: updatedMockUser.phone }
+        });
+        fireEvent.click(getByText('UPDATE'));
+
+        await waitFor(() => {
+            expect(axios.put).toHaveBeenCalledTimes(1);
+            expect(axios.put).toHaveBeenCalledWith("/api/v1/auth/profile", updatedMockUser);
+        });
+
+        expect(toast.success).toHaveBeenCalledWith("Profile Updated Successfully");
+
+    });
+
 
     it("should display error when there is an error in updating the form", async () => {
         let updatedMockUser = {
@@ -194,8 +290,10 @@ describe("Profile Component", () => {
             address: "123 Woodlands Avenue 6"
         }
 
-        axios.put.mockResolvedValueOnce({
-            error: "Passsword is required and 6 character long"
+        axios.put.mockResolvedValue({
+            data: {
+                error: "Password is required and 6 character long"
+            }
         });
 
         const { getByText, getByPlaceholderText } = render(
@@ -217,7 +315,9 @@ describe("Profile Component", () => {
             expect(axios.put).toHaveBeenCalledWith("/api/v1/auth/profile", updatedMockUser);
         });
 
-        expect(toast.error).toHaveBeenCalledWith("Passsword is required and 6 character long");
+        expect(toast.error).toHaveBeenCalledWith("Password is required and 6 character long");
+
+        // Does not display error message when it is available
 
     });
 

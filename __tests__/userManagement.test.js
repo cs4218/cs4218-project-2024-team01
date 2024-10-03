@@ -3,7 +3,6 @@ import { updateProfileController, getOrdersController, getAllOrdersController, o
 import userModel from "../models/userModel.js";
 import { UserBuilder } from '../testutils/user/userbuilder.js';
 import { ObjectId } from 'mongodb';
-import { hashPassword } from '../helpers/authHelper.js';
 import bcrypt from "bcrypt";
 
 import orderModel from "../models/orderModel.js";
