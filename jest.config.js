@@ -13,7 +13,7 @@ const config = {
 		"./jest.setup.js"
 	],
 	setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
-	"testPathIgnorePatterns": ["./client/src/_site"],
+	"testPathIgnorePatterns": ["./client/src/_site/"],
 	"testMatch": ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(test).[jt]s?(x)"]
 };
 
