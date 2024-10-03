@@ -10,9 +10,7 @@
     "client": "npm start --prefix ./client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "sonarqube": "sonarqube-scanner",
-    "test:client": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.client.config.js",
-    "test:server": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.server.config.js",
-    "test": "npm run test:client && npm run test:server"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.config.js"
   },
   "keywords": [],
   "author": "RP",
