@@ -43,7 +43,7 @@ jest.mock('../../context/search', () => ({
 Object.defineProperty(window, 'localStorage', {
     value: {
         setItem: jest.fn(),
-        getItem: jest.fn(),
+        getItem: jest.fn(() => JSON.stringify({ user: mockUser.user })),
         removeItem: jest.fn(),
     },
     writable: true,
