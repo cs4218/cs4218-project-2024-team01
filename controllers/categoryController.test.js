@@ -5,11 +5,11 @@ import {
   categoryControlller,
   singleCategoryController,
   deleteCategoryCOntroller,
-} from "../controllers/categoryController";
+} from "./categoryController";
 import categoryModel from "../models/categoryModel";
 import slugify from "slugify";
 
-jest.mock("../models/categoryModel.js");
+// jest.mock("../models/categoryModel.js");
 
 let req;
 let res;
