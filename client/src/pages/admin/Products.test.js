@@ -123,7 +123,7 @@ describe('Products Component', () => {
 
         await waitFor(() => {
             expect(axios.get).toHaveBeenCalledWith('/api/v1/product/get-product');
-            expect(toast.error).toHaveBeenCalledWith('Someething Went Wrong');
+            expect(toast.error).toHaveBeenCalledWith('Something Went Wrong');
         });
     });
 

@@ -114,7 +114,7 @@ describe('Create Category Component', () => {
 
         await waitFor(() => {
             expect(axios.get).toHaveBeenCalledWith('/api/v1/category/get-category');
-            expect(toast.error).toHaveBeenCalledWith('Something wwent wrong in getting catgeory');
+            expect(toast.error).toHaveBeenCalledWith('Something went wrong in getting catgeory');
         });
     });
 
@@ -204,7 +204,7 @@ describe('Create Category Component', () => {
         fireEvent.change(screen.getByPlaceholderText(/enter new category/i), { target: { value: 'Test2' } });
         fireEvent.click(screen.getByText('Submit'));
         await waitFor(() => expect(axios.post).toHaveBeenCalled());
-        expect(toast.error).toHaveBeenCalledWith('somthing went wrong in input form');
+        expect(toast.error).toHaveBeenCalledWith('something went wrong in input form');
     });
 
     it('should update a category successfully', async () => {
@@ -309,7 +309,7 @@ describe('Create Category Component', () => {
               { name: 'updatedCategory' }
             );
           });
-          expect(toast.error).toHaveBeenCalledWith('Somtihing went wrong');
+          expect(toast.error).toHaveBeenCalledWith('Something went wrong');
 
     })
 
@@ -401,7 +401,7 @@ describe('Create Category Component', () => {
               '/api/v1/category/delete-category/cid_1',
             );
           });
-          expect(toast.error).toHaveBeenCalledWith('Somtihing went wrong');
+          expect(toast.error).toHaveBeenCalledWith('Something went wrong');
 
     })
 

@@ -128,10 +128,6 @@ describe("Admin Orders Component", () => {
       expect(screen.getByText(/price : 100/i)).toBeInTheDocument();
     });
     const selectElement = screen.getByRole("combobox");
-    // fireEvent.mouseDown(selectElement);
-    // const processingOption = screen.getByRole('option', { name: /Processing/i });
-    // fireEvent.click(processingOption);
-
     fireEvent.change(selectElement, { target: { value: "Processing" } });
 
     await waitFor(async () => {
@@ -147,6 +143,5 @@ describe("Admin Orders Component", () => {
       // expect(processingOption).toHaveAttribute('aria-selected', 'true');
       // expect(handleChange).toHaveBeenCalledWith(mockId, 'Processing');
     });
-    screen.debug();
   });
 });
