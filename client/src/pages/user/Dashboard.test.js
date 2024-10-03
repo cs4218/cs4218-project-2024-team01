@@ -1,7 +1,7 @@
 import React from "react";
 import { beforeEach, describe, jest, expect, it } from '@jest/globals';
 import { MemoryRouter, Routes, Route } from "react-router-dom";
-import { render, fireEvent, getByRole } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import '@testing-library/jest-dom/extend-expect';
 import Dashboard from "./Dashboard";
 
