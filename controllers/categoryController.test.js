@@ -7,9 +7,6 @@ import {
   deleteCategoryCOntroller,
 } from "./categoryController";
 import categoryModel from "../models/categoryModel";
-import slugify from "slugify";
-
-// jest.mock("../models/categoryModel.js");
 
 let req;
 let res;
@@ -66,7 +63,7 @@ describe("For Create Category Controller", () => {
     test("Returns created category and the associated message", async () => {
       let expectedCategory = {
         name: "new category",
-        slug: slugify("new category"),
+        slug: "new-category",
       };
 
       req.body.name = "new category";
@@ -141,7 +138,7 @@ describe("For Update Category Controller", () => {
 
   let updatedCategory = {
     name: "updated category",
-    slug: slugify("updated category"),
+    slug: "updated-category",
   };
 
   describe("Given a new category name and existing id", () => {
@@ -200,15 +197,15 @@ describe("For All Category Controller", () => {
       let categories = [
         {
           name: "category one",
-          slug: slugify("category one"),
+          slug: "category-one",
         },
         {
           name: "category two",
-          slug: slugify("category two"),
+          slug: "category-two",
         },
         {
           name: "category three",
-          slug: slugify("category three"),
+          slug: "category-three",
         },
       ];
 
@@ -248,7 +245,7 @@ describe("For Single Category Controller", () => {
   beforeEach(() => {
     req = {
       params: {
-        slug: slugify("single category"),
+        slug: "single-category",
       },
     };
   });
@@ -257,7 +254,7 @@ describe("For Single Category Controller", () => {
     test("Returns the matching category and the associated message", async () => {
       let category = {
         name: "single category",
-        slug: slugify("single category"),
+        slug: "single-category",
       };
 
       categoryModel.findOne = jest.fn().mockResolvedValueOnce(category);
@@ -265,7 +262,7 @@ describe("For Single Category Controller", () => {
       await singleCategoryController(req, res);
 
       expect(categoryModel.findOne).toBeCalledWith({
-        slug: slugify("single category"),
+        slug: "single-category",
       });
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.send).toHaveBeenCalledWith({
@@ -284,7 +281,7 @@ describe("For Single Category Controller", () => {
       await singleCategoryController(req, res);
 
       expect(categoryModel.findOne).toBeCalledWith({
-        slug: slugify("single category"),
+        slug: "single-category",
       });
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.send).toHaveBeenCalledWith({

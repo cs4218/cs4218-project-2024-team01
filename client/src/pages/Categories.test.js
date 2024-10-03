@@ -5,7 +5,6 @@ import { MemoryRouter, Routes, Route } from "react-router-dom";
 import "@testing-library/jest-dom/extend-expect";
 import Categories from "./Categories";
 import useCategory from "../hooks/useCategory";
-import slugify from "slugify";
 
 jest.mock("../hooks/useCategory");
 
@@ -44,11 +43,11 @@ describe("Category Component", () => {
     let categories = [
       {
         name: "category one",
-        slug: slugify("category one"),
+        slug: "category-one",
       },
       {
         name: "category two",
-        slug: slugify("category two"),
+        slug: "category-two",
       }
     ];
 

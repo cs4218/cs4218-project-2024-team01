@@ -3,7 +3,6 @@ import { test, jest } from "@jest/globals";
 import axios from "axios";
 import "@testing-library/jest-dom/extend-expect";
 import useCategory from "./useCategory";
-import slugify from "slugify";
 
 // Mocking axios
 jest.mock("axios");
@@ -13,11 +12,11 @@ describe("For Use Category Hook", () => {
     const categories = [
       {
         name: "category one",
-        slug: slugify("category one"),
+        slug: "category-one",
       },
       {
         name: "category two",
-        slug: slugify("category two"),
+        slug: "category-two",
       },
     ];
 

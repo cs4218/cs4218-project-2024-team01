@@ -11,7 +11,7 @@ import {
 } from "react-router-dom";
 import "@testing-library/jest-dom/extend-expect";
 import CategoryProduct from "./CategoryProduct";
-import slugify from "slugify";
+
 
 // Mocking axios
 jest.mock("axios");
@@ -31,7 +31,7 @@ jest.mock("react-router-dom", () => ({
 const category = {
   _id: "1",
   name: "category one",
-  slug: slugify("category one"),
+  slug: "category-one",
 };
 
 const renderPage = () => {
@@ -46,7 +46,7 @@ const renderPage = () => {
 
 beforeEach(() => {
   jest.clearAllMocks();
-  useParams.mockReturnValueOnce({ slug: slugify("category one") });
+  useParams.mockReturnValueOnce({ slug: "category-one" });
 });
 
 describe("Category Product component", () => {
@@ -125,7 +125,7 @@ describe("Category Product component", () => {
         name: "product one",
         description: "this is product one",
         price: 10,
-        slug: slugify("product one"),
+        slug: "product-one",
         category: "1",
       },
     ];

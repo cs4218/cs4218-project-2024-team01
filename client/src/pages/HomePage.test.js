@@ -5,7 +5,6 @@ import axios from "axios";
 import { MemoryRouter, Routes, Route, useNavigate } from "react-router-dom";
 import "@testing-library/jest-dom/extend-expect";
 import HomePage from "./HomePage";
-import slugify from "slugify";
 import { useCart } from "../context/cart";
 import toast from "react-hot-toast";
 import { Prices } from "../components/Prices";
@@ -50,12 +49,12 @@ const categories = [
   {
     _id: "1",
     name: "category one",
-    slug: slugify("category one"),
+    slug: "category-one",
   },
   {
     _id: "2",
     name: "category two",
-    slug: slugify("category two"),
+    slug: "category-two",
   },
 ];
 
@@ -67,7 +66,7 @@ const generateProducts = (n) => {
       name: `Product ${i}`,
       description: `This is product ${i}`,
       price: 10 + 20 * (i - 1),
-      slug: slugify(`Product ${i}`),
+      slug: `Product-${i}`,
       category: (((i - 1) % 2) + 1).toString(),
     });
   }
@@ -468,7 +467,7 @@ describe("Home Page component", () => {
         name: "Product 1",
         description: "This is product 1",
         price: 10000,
-        slug: slugify("Product 1"),
+        slug: "Product-1",
         category: "1",
       };
 
