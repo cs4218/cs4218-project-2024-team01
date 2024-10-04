@@ -10,15 +10,15 @@ jest.mock('axios');
 jest.mock('react-hot-toast');
 
 jest.mock('../../context/auth', () => ({
-    useAuth: jest.fn(() => [null, jest.fn()]) // Mock useAuth hook to return null state and a mock function for setAuth
+    useAuth: jest.fn(() => [null, jest.fn()])
   }));
 
   jest.mock('../../context/cart', () => ({
-    useCart: jest.fn(() => [null, jest.fn()]) // Mock useCart hook to return null state and a mock function
+    useCart: jest.fn(() => [null, jest.fn()])
   }));
 
 jest.mock('../../context/search', () => ({
-    useSearch: jest.fn(() => [{ keyword: '' }, jest.fn()]) // Mock useSearch hook to return null state and a mock function
+    useSearch: jest.fn(() => [{ keyword: '' }, jest.fn()])
   }));
 
 describe('Update Product Component', () => {
@@ -261,249 +261,407 @@ describe('Update Product Component', () => {
           '/api/v1/product/update-product/pid_1',
           expect.any(FormData)
         );
-        // expect(toast.error).toHaveBeenCalledWith('something went wrong');
+        expect(toast.error).toHaveBeenCalledWith('something went wrong');
       });
 
     });
 
-    // it('should display error message if the chosen product is not deleted successfully', async () => {
-    //   axios.get.mockImplementation((url) => {
-    //     if (url === '/api/v1/product/get-product/Test') {
-    //       return Promise.resolve({
-    //         data: {
-    //           success: true,
-    //           message: "Single Product Fetched",
-    //           product: {
-    //             _id: "pid_1",
-    //             name: "Test",
-    //             slug: "Test",
-    //             description: "Test",
-    //             price: 1,
-    //             category: {
-    //               _id: "cid_1",
-    //               name: "category1",
-    //               slug: "category1",
-    //               __v: 0
-    //             },
-    //             quantity: 1,
-    //             createdAt: Date.now().toString(),
-    //             updatedAt: Date.now().toString(),
-    //             __v: 0
-    //           }
-    //         }
-    //       });
-    //     }
-    //     if (url === '/api/v1/category/get-category') {
-    //       return Promise.resolve({
-    //         data: {
-    //           success: true,
-    //           message: "All Categories List",
-    //           category: [
-    //             {
-    //               _id: "cid_1",
-    //               name: "category1",
-    //               slug: "category1",
-    //               __v: 0
-    //             }
-    //           ]
-    //         }
-    //       });
-    //     }
-    //     if (url === '/api/v1/product/delete-product/pid_1') {
-    //       return Promise.reject({
-    //         data: {
-    //           success: false,
-    //           message: "Cannot delete product",
-    //         }
-    //       });
-    //     }
-    //     return Promise.reject(new Error('Not Found'));
-    //   });
+    it('should display error message if the chosen product is not deleted successfully', async () => {
+      axios.get.mockImplementation((url) => {
+        if (url === '/api/v1/product/get-product/Test') {
+          return Promise.resolve({
+            data: {
+              success: true,
+              message: "Single Product Fetched",
+              product: {
+                _id: "pid_1",
+                name: "Test",
+                slug: "Test",
+                description: "Test",
+                price: 1,
+                category: {
+                  _id: "cid_1",
+                  name: "category1",
+                  slug: "category1",
+                  __v: 0
+                },
+                quantity: 1,
+                createdAt: Date.now().toString(),
+                updatedAt: Date.now().toString(),
+                __v: 0
+              }
+            }
+          });
+        }
+        if (url === '/api/v1/category/get-category') {
+          return Promise.resolve({
+            data: {
+              success: true,
+              message: "All Categories List",
+              category: [
+                {
+                  _id: "cid_1",
+                  name: "category1",
+                  slug: "category1",
+                  __v: 0
+                }
+              ]
+            }
+          });
+        }
+        if (url === '/api/v1/product/delete-product/pid_1') {
+          return Promise.reject({
+            data: {
+              success: false,
+              message: "Cannot delete product",
+            }
+          });
+        }
+        return Promise.reject(new Error('Not Found'));
+      });
 
-    //   render(
-    //     <MemoryRouter initialEntries={['/product/Test']}>
-    //       <Routes>
-    //         <Route path="/product/:slug" element={<UpdateProduct />} />
-    //       </Routes>
-    //     </MemoryRouter>
-    //   );
+      render(
+        <MemoryRouter initialEntries={['/product/Test']}>
+          <Routes>
+            <Route path="/product/:slug" element={<UpdateProduct />} />
+          </Routes>
+        </MemoryRouter>
+      );
 
-    //   await waitFor(() => {
-    //     expect(axios.get).toHaveBeenCalledWith('/api/v1/product/get-product/Test');
-    //     expect(screen.getByPlaceholderText(/write a name/i).value).toBe("Test");
-    //     expect(screen.getByPlaceholderText(/write a description/i).value).toBe("Test");
-    //     expect(screen.getByText("No")).toBeInTheDocument();
-    //     expect(screen.getByRole('button', { name: "DELETE PRODUCT" })).toBeInTheDocument();
+      await waitFor(() => {
+        expect(axios.get).toHaveBeenCalledWith('/api/v1/product/get-product/Test');
+        expect(screen.getByPlaceholderText(/write a name/i).value).toBe("Test");
+        expect(screen.getByPlaceholderText(/write a description/i).value).toBe("Test");
+        expect(screen.getByText("No")).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: "DELETE PRODUCT" })).toBeInTheDocument();
 
-    //   });
-    //   fireEvent.click(screen.getByText("DELETE PRODUCT"));
+      });
+      fireEvent.click(screen.getByText("DELETE PRODUCT"));
 
-    //   jest.spyOn(window, 'prompt').mockReturnValue("Yes");
-    //   fireEvent.click(screen.getByText("DELETE PRODUCT"));
+      jest.spyOn(window, 'prompt').mockReturnValue("Yes");
+      fireEvent.click(screen.getByText("DELETE PRODUCT"));
 
-    //   expect(window.prompt).toHaveBeenCalledWith("Are You Sure want to delete this product ? ");
+      expect(window.prompt).toHaveBeenCalledWith("Are You Sure want to delete this product ? ");
 
-    //   await waitFor(() => {
-    //     expect(axios.delete).toHaveBeenCalledWith(
-    //       '/api/v1/product/delete-product/pid_1'
-    //     );
-    //     expect(toast.error).toHaveBeenCalledWith("Something went wrong");
-    //   });
+      await waitFor(() => {
+        expect(axios.delete).toHaveBeenCalledWith(
+          '/api/v1/product/delete-product/pid_1'
+        );
+        expect(toast.error).toHaveBeenCalledWith("Something went wrong");
+      });
 
-    // });
+    });
 
-    // it('should delete the chosen product successfully', async () => {
-    //   axios.get.mockImplementation((url) => {
-    //     if (url === '/api/v1/product/get-product/Test') {
-    //       return Promise.resolve({
-    //         data: {
-    //           success: true,
-    //           message: "Single Product Fetched",
-    //           product: {
-    //             _id: "pid_1",
-    //             name: "Test",
-    //             slug: "Test",
-    //             description: "Test",
-    //             price: 1,
-    //             category: {
-    //               _id: "cid_1",
-    //               name: "category1",
-    //               slug: "category1",
-    //               __v: 0
-    //             },
-    //             quantity: 1,
-    //             createdAt: Date.now().toString(),
-    //             updatedAt: Date.now().toString(),
-    //             __v: 0
-    //           }
-    //         }
-    //       });
-    //     }
-    //     if (url === '/api/v1/category/get-category') {
-    //       return Promise.resolve({
-    //         data: {
-    //           success: true,
-    //           message: "All Categories List",
-    //           category: [
-    //             {
-    //               _id: "cid_1",
-    //               name: "category1",
-    //               slug: "category1",
-    //               __v: 0
-    //             }
-    //           ]
-    //         }
-    //       });
-    //     }
+    it('should delete the chosen product successfully', async () => {
+      axios.get.mockImplementation((url) => {
+        if (url === '/api/v1/product/get-product/Test') {
+          return Promise.resolve({
+            data: {
+              success: true,
+              message: "Single Product Fetched",
+              product: {
+                _id: "pid_1",
+                name: "Test",
+                slug: "Test",
+                description: "Test",
+                price: 1,
+                category: {
+                  _id: "cid_1",
+                  name: "category1",
+                  slug: "category1",
+                  __v: 0
+                },
+                quantity: 1,
+                createdAt: Date.now().toString(),
+                updatedAt: Date.now().toString(),
+                __v: 0
+              }
+            }
+          });
+        }
+        if (url === '/api/v1/category/get-category') {
+          return Promise.resolve({
+            data: {
+              success: true,
+              message: "All Categories List",
+              category: [
+                {
+                  _id: "cid_1",
+                  name: "category1",
+                  slug: "category1",
+                  __v: 0
+                }
+              ]
+            }
+          });
+        }
 
-    //     return Promise.reject(new Error('Not Found'));
-    //   });
+        return Promise.reject(new Error('Not Found'));
+      });
 
-    //   render(
-    //     <MemoryRouter initialEntries={['/product/Test']}>
-    //       <Routes>
-    //         <Route path="/product/:slug" element={<UpdateProduct />} />
-    //       </Routes>
-    //     </MemoryRouter>
-    //   );
+      render(
+        <MemoryRouter initialEntries={['/product/Test']}>
+          <Routes>
+            <Route path="/product/:slug" element={<UpdateProduct />} />
+          </Routes>
+        </MemoryRouter>
+      );
 
-    //   axios.delete.mockResolvedValue({
-    //     data: {
-    //       success: true,
-    //       message: 'Product deleted successfully',
-    //     },
-    //   });
+      axios.delete.mockResolvedValue({
+        data: {
+          success: true,
+          message: 'Product deleted successfully',
+        },
+      });
 
-    //   await waitFor(() => {
-    //     expect(axios.get).toHaveBeenCalledWith('/api/v1/product/get-product/Test');
-    //     expect(screen.getByPlaceholderText(/write a name/i).value).toBe("Test");
-    //     expect(screen.getByPlaceholderText(/write a description/i).value).toBe("Test");
-    //     expect(screen.getByText("No")).toBeInTheDocument();
-    //     expect(screen.getByRole('button', { name: "DELETE PRODUCT" })).toBeInTheDocument();
+      await waitFor(() => {
+        expect(axios.get).toHaveBeenCalledWith('/api/v1/product/get-product/Test');
+        expect(screen.getByPlaceholderText(/write a name/i).value).toBe("Test");
+        expect(screen.getByPlaceholderText(/write a description/i).value).toBe("Test");
+        expect(screen.getByText("No")).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: "DELETE PRODUCT" })).toBeInTheDocument();
 
-    //   });
-    //   jest.spyOn(window, 'prompt').mockReturnValue("Yes");
-    //   fireEvent.click(screen.getByText("DELETE PRODUCT"));
+      });
+      jest.spyOn(window, 'prompt').mockReturnValue("Yes");
+      fireEvent.click(screen.getByText("DELETE PRODUCT"));
 
-    //   expect(window.prompt).toHaveBeenCalledWith("Are You Sure want to delete this product ? ");
+      expect(window.prompt).toHaveBeenCalledWith("Are You Sure want to delete this product ? ");
 
-    //   await waitFor(() => {
-    //     expect(axios.delete).toHaveBeenCalledWith(
-    //       '/api/v1/product/delete-product/pid_1'
-    //     );
-    //     expect(toast.success).toHaveBeenCalledWith("Product DEleted Succfully");
-    //   });
+      await waitFor(() => {
+        expect(axios.delete).toHaveBeenCalledWith(
+          '/api/v1/product/delete-product/pid_1'
+        );
+        expect(toast.success).toHaveBeenCalledWith("Product Deleted Successfully");
+      });
 
-    // });
+    });
+
+    it('should not delete the chosen product successfully if there is no input to the window prompt', async () => {
+      axios.get.mockImplementation((url) => {
+        if (url === '/api/v1/product/get-product/Test') {
+          return Promise.resolve({
+            data: {
+              success: true,
+              message: "Single Product Fetched",
+              product: {
+                _id: "pid_1",
+                name: "Test",
+                slug: "Test",
+                description: "Test",
+                price: 1,
+                category: {
+                  _id: "cid_1",
+                  name: "category1",
+                  slug: "category1",
+                  __v: 0
+                },
+                quantity: 1,
+                createdAt: Date.now().toString(),
+                updatedAt: Date.now().toString(),
+                __v: 0
+              }
+            }
+          });
+        }
+        if (url === '/api/v1/category/get-category') {
+          return Promise.resolve({
+            data: {
+              success: true,
+              message: "All Categories List",
+              category: [
+                {
+                  _id: "cid_1",
+                  name: "category1",
+                  slug: "category1",
+                  __v: 0
+                }
+              ]
+            }
+          });
+        }
+
+        return Promise.reject(new Error('Not Found'));
+      });
+
+      render(
+        <MemoryRouter initialEntries={['/product/Test']}>
+          <Routes>
+            <Route path="/product/:slug" element={<UpdateProduct />} />
+          </Routes>
+        </MemoryRouter>
+      );
+
+      axios.delete.mockResolvedValue({
+        data: {
+          success: false,
+          message: 'Product not deleted successfully',
+        },
+      });
+
+      await waitFor(() => {
+        expect(axios.get).toHaveBeenCalledWith('/api/v1/product/get-product/Test');
+        expect(screen.getByPlaceholderText(/write a name/i).value).toBe("Test");
+        expect(screen.getByPlaceholderText(/write a description/i).value).toBe("Test");
+        expect(screen.getByText("No")).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: "DELETE PRODUCT" })).toBeInTheDocument();
+
+      });
+      jest.spyOn(window, 'prompt').mockReturnValue("");
+      fireEvent.click(screen.getByText("DELETE PRODUCT"));
+
+      expect(window.prompt).toHaveBeenCalledWith("Are You Sure want to delete this product ? ");
 
 
-    // it('should retrieve the categories list successfully', async () => {
-    //   axios.get.mockImplementation((url) => {
-    //     if (url === '/api/v1/category/get-category') {
-    //       return Promise.resolve({
-    //         data: {
-    //           success: true,
-    //           message: "All Categories List",
-    //           category: [
-    //             {
-    //               _id: "cid_1",
-    //               name: "category1",
-    //               slug: "category1",
-    //               __v: 0
-    //             }
-    //           ]
-    //         }
-    //       });
-    //     }
-    //     return Promise.reject(new Error('Not Found'));
-    //   });
+      expect(axios.delete).not.toHaveBeenCalled()
+    });
 
-    //   render(
-    //     <MemoryRouter initialEntries={['/product/Test']}>
-    //       <Routes>
-    //         <Route path="/product/:slug" element={<UpdateProduct />} />
-    //       </Routes>
-    //     </MemoryRouter>
-    //   );
+    it('should not delete the chosen product successfully if the input is no to the window prompt', async () => {
+      axios.get.mockImplementation((url) => {
+        if (url === '/api/v1/product/get-product/Test') {
+          return Promise.resolve({
+            data: {
+              success: true,
+              message: "Single Product Fetched",
+              product: {
+                _id: "pid_1",
+                name: "Test",
+                slug: "Test",
+                description: "Test",
+                price: 1,
+                category: {
+                  _id: "cid_1",
+                  name: "category1",
+                  slug: "category1",
+                  __v: 0
+                },
+                quantity: 1,
+                createdAt: Date.now().toString(),
+                updatedAt: Date.now().toString(),
+                __v: 0
+              }
+            }
+          });
+        }
+        if (url === '/api/v1/category/get-category') {
+          return Promise.resolve({
+            data: {
+              success: true,
+              message: "All Categories List",
+              category: [
+                {
+                  _id: "cid_1",
+                  name: "category1",
+                  slug: "category1",
+                  __v: 0
+                }
+              ]
+            }
+          });
+        }
 
-    //   await waitFor(() => {
-    //     expect(axios.get).toHaveBeenCalledWith('/api/v1/category/get-category');
-    //   });
-    // });
+        return Promise.reject(new Error('Not Found'));
+      });
 
-    // it('should display error message when the categories list is not retrieved successfully', async () => {
-    //   axios.get.mockImplementation((url) => {
-    //     if (url === '/api/v1/category/get-category') {
-    //       return Promise.reject({
-    //         data: {
-    //           success: false,
-    //           message: "All Categories List",
-    //           category: [
-    //             {
-    //               _id: "cid_1",
-    //               name: "category1",
-    //               slug: "category1",
-    //               __v: 0
-    //             }
-    //           ]
-    //         }
-    //       });
-    //     }
-    //     return Promise.reject(new Error('Not Found'));
-    //   });
+      render(
+        <MemoryRouter initialEntries={['/product/Test']}>
+          <Routes>
+            <Route path="/product/:slug" element={<UpdateProduct />} />
+          </Routes>
+        </MemoryRouter>
+      );
 
-    //   render(
-    //     <MemoryRouter initialEntries={['/product/Test']}>
-    //       <Routes>
-    //         <Route path="/product/:slug" element={<UpdateProduct />} />
-    //       </Routes>
-    //     </MemoryRouter>
-    //   );
+      axios.delete.mockResolvedValue({
+        data: {
+          success: false,
+          message: 'Product not deleted successfully',
+        },
+      });
 
-    //   await waitFor(() => {
-    //     expect(axios.get).toHaveBeenCalledWith('/api/v1/category/get-category');
-    //     expect(toast.error).toHaveBeenCalledWith('Something wwent wrong in getting catgeory');
-    //   });
-    // });
+      await waitFor(() => {
+        expect(axios.get).toHaveBeenCalledWith('/api/v1/product/get-product/Test');
+        expect(screen.getByPlaceholderText(/write a name/i).value).toBe("Test");
+        expect(screen.getByPlaceholderText(/write a description/i).value).toBe("Test");
+        expect(screen.getByText("No")).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: "DELETE PRODUCT" })).toBeInTheDocument();
+
+      });
+      jest.spyOn(window, 'prompt').mockReturnValue("no");
+      fireEvent.click(screen.getByText("DELETE PRODUCT"));
+
+      expect(window.prompt).toHaveBeenCalledWith("Are You Sure want to delete this product ? ");
+
+
+      expect(axios.delete).not.toHaveBeenCalled();
+    });
+
+
+    it('should retrieve the categories list successfully', async () => {
+      axios.get.mockImplementation((url) => {
+        if (url === '/api/v1/category/get-category') {
+          return Promise.resolve({
+            data: {
+              success: true,
+              message: "All Categories List",
+              category: [
+                {
+                  _id: "cid_1",
+                  name: "category1",
+                  slug: "category1",
+                  __v: 0
+                }
+              ]
+            }
+          });
+        }
+        return Promise.reject(new Error('Not Found'));
+      });
+
+      render(
+        <MemoryRouter initialEntries={['/product/Test']}>
+          <Routes>
+            <Route path="/product/:slug" element={<UpdateProduct />} />
+          </Routes>
+        </MemoryRouter>
+      );
+
+      await waitFor(() => {
+        expect(axios.get).toHaveBeenCalledWith('/api/v1/category/get-category');
+      });
+    });
+
+    it('should display error message when the categories list is not retrieved successfully', async () => {
+      axios.get.mockImplementation((url) => {
+        if (url === '/api/v1/category/get-category') {
+          return Promise.reject({
+            data: {
+              success: false,
+              message: "All Categories List",
+              category: [
+                {
+                  _id: "cid_1",
+                  name: "category1",
+                  slug: "category1",
+                  __v: 0
+                }
+              ]
+            }
+          });
+        }
+        return Promise.reject(new Error('Not Found'));
+      });
+
+      render(
+        <MemoryRouter initialEntries={['/product/Test']}>
+          <Routes>
+            <Route path="/product/:slug" element={<UpdateProduct />} />
+          </Routes>
+        </MemoryRouter>
+      );
+
+      await waitFor(() => {
+        expect(axios.get).toHaveBeenCalledWith('/api/v1/category/get-category');
+        expect(toast.error).toHaveBeenCalledWith('Something went wrong in getting catgeory');
+      });
+    });
 
 })
