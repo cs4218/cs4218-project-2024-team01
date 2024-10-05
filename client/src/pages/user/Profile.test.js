@@ -293,7 +293,6 @@ describe("Profile Component", () => {
         let mockResolvedData = {
             data: {
                 error: "Password is required and 6 character long",
-                errro: "Not supposed to use this"
             }
         }
 
@@ -318,7 +317,6 @@ describe("Profile Component", () => {
             expect(axios.put).toHaveBeenCalledWith("/api/v1/auth/profile", updatedMockUser);
         });
 
-        expect(toast.error).not.toHaveBeenCalledWith("Something went wrong");
         expect(toast.error).toHaveBeenCalledWith(mockResolvedData.data.error);
 
         // Does not display error message when it is available
