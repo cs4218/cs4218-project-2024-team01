@@ -476,6 +476,7 @@ describe("Updating Profile", () => {
     let updateProfileFindByIdSpy;
     let updateProfileFindByIdAndUpdateSpy;
     let bcryptSpy;
+	let consoleLogSpy;
 
     describe("Request is valid", () => {
 
@@ -492,6 +493,7 @@ describe("Updating Profile", () => {
             updateProfileFindByIdSpy = jest.spyOn(userModel, "findById")
             updateProfileFindByIdAndUpdateSpy = jest.spyOn(userModel, "findByIdAndUpdate")
             bcryptSpy = jest.spyOn(bcrypt, "hash")
+			consoleLogSpy = jest.spyOn(console, "log")
             fillUserRequestAndResponse(true)
             jest.clearAllMocks()
         });
@@ -523,6 +525,8 @@ describe("Updating Profile", () => {
 
         it("should return an error if there is an error finding user", async () => {
             updateProfileFindByIdSpy.mockRejectedValue(new Error("Database Error"))
+			consoleLogSpy.mockImplementation(() => {})
+
             await updateProfileController(userRequest, userResponse)
             expect(userResponse.status).toHaveBeenCalledWith(400)
             expect(userResponse.send).toHaveBeenCalledWith({
@@ -530,6 +534,7 @@ describe("Updating Profile", () => {
                 message: "Error While Update profile",
                 error: expect.any(Error)
             })
+			expect(consoleLogSpy).toHaveBeenCalledWith(new Error("Database Error"))
 
             // Wrong spelling in error message
         });
@@ -537,6 +542,8 @@ describe("Updating Profile", () => {
         it("should return an error if there is an error updating user", async () => {
             updateProfileFindByIdSpy.mockResolvedValue(userRequest.body)
             updateProfileFindByIdAndUpdateSpy.mockRejectedValue(new Error("Database Error"))
+			consoleLogSpy.mockImplementation(() => {})
+
             await updateProfileController(userRequest, userResponse)
             expect(userResponse.status).toHaveBeenCalledWith(400)
             expect(userResponse.send).toHaveBeenCalledWith({
@@ -544,6 +551,7 @@ describe("Updating Profile", () => {
                 message: "Error While Update profile",
                 error: expect.any(Error)
             })
+			expect(consoleLogSpy).toHaveBeenCalledWith(new Error("Database Error"))
 
             // Wrong spelling in error message
         })
@@ -554,6 +562,7 @@ describe("Updating Profile", () => {
         beforeEach(() => {
             updateProfileFindByIdSpy = jest.spyOn(userModel, "findById")
             updateProfileFindByIdAndUpdateSpy = jest.spyOn(userModel, "findByIdAndUpdate")
+			consoleLogSpy = jest.spyOn(console, "log")
             fillUserRequestAndResponse(false)
             jest.clearAllMocks()
         });
@@ -621,12 +630,14 @@ const fillOrderRequestAndResponse = (isValidRequest) => {
 }
 
 let orderModelFindSpy;
+let consoleLogSpy;
 
 describe("Get Orders", () => {
 
     describe("Request is valid", () => {
         beforeEach(() => {
             orderModelFindSpy = jest.spyOn(orderModel, "find")
+			consoleLogSpy = jest.spyOn(console, "log")
             fillOrderRequestAndResponse(true)
             jest.clearAllMocks()
             orderModelFindSpy.mockClear()
@@ -649,6 +660,7 @@ describe("Get Orders", () => {
                     populate: jest.fn().mockRejectedValue(new Error("Database Error"))
                 }))
             })
+			consoleLogSpy.mockImplementation(() => {})
             await getOrdersController(orderRequest, orderResponse)
             expect(orderResponse.status).toHaveBeenCalledWith(500)
             expect(orderResponse.send).toHaveBeenCalledWith({
@@ -656,6 +668,8 @@ describe("Get Orders", () => {
                 message: "Error While Getting Orders",
                 error: expect.any(Error)
             })
+			expect(consoleLogSpy).toHaveBeenCalledWith(new Error("Database Error"))
+
 
             // Wrong spelling in error message
         });
@@ -664,6 +678,7 @@ describe("Get Orders", () => {
     describe("Request is invalid", () => {
         beforeEach(() => {
             orderModelFindSpy = jest.spyOn(orderModel, "find")
+			consoleLogSpy = jest.spyOn(console, "log")
             fillOrderRequestAndResponse(false)
             jest.clearAllMocks()
             orderModelFindSpy.mockClear()
@@ -699,6 +714,7 @@ describe("Get All Orders", () => {
     describe("For all requests", () => {
         beforeEach(() => {
             orderModelFindSpy = jest.spyOn(orderModel, "find")
+			consoleLogSpy = jest.spyOn(console, "log")
             fillOrderRequestAndResponse(true)
             jest.clearAllMocks()
             orderModelFindSpy.mockClear()
@@ -726,6 +742,7 @@ describe("Get All Orders", () => {
                     }))
                 }))
             })
+			consoleLogSpy.mockImplementation(() => {})
 
             await getAllOrdersController(orderRequest, orderResponse)
             expect(orderModelFindSpy).toHaveBeenCalledWith({})
@@ -735,6 +752,7 @@ describe("Get All Orders", () => {
                 message: "Error While Getting Orders",
                 error: expect.any(Error)
             })
+			expect(consoleLogSpy).toHaveBeenCalledWith(new Error("Database Error"))
 
             // Wrong spelling in error message
         });
@@ -776,11 +794,13 @@ const fillOrderStatusRequestAndResponse = (isValidRequest) => {
 describe("Order Status", () => {
 
     let orderStatusFindByIdAndUpdateSpy;
+	let consoleLogSpy;
     
     describe("Request is valid", () => {
 
         beforeEach(() => {
             orderStatusFindByIdAndUpdateSpy = jest.spyOn(orderModel, "findByIdAndUpdate")
+			consoleLogSpy = jest.spyOn(console, "log")
             fillOrderStatusRequestAndResponse(true)
             jest.clearAllMocks()
             orderStatusFindByIdAndUpdateSpy.mockClear()
@@ -802,6 +822,7 @@ describe("Order Status", () => {
 
             orderStatusRequest.body = { status: "Shipped" }
             orderStatusFindByIdAndUpdateSpy = jest.spyOn(orderModel, "findByIdAndUpdate").mockRejectedValue(new Error("Database Error"))
+			consoleLogSpy.mockImplementation(() => {})
 
             await orderStatusController(orderStatusRequest, orderStatusResponse)
 
@@ -812,6 +833,7 @@ describe("Order Status", () => {
                 message: "Error While Updating Order",
                 error: expect.any(Error)
             })
+			expect(consoleLogSpy).toHaveBeenCalledWith(new Error("Database Error"))
 
             // Wrong spelling in error message
 
@@ -821,6 +843,7 @@ describe("Order Status", () => {
     describe("Request is invalid", () => {
         beforeEach(() => {
             orderStatusFindByIdAndUpdateSpy = jest.spyOn(orderModel, "findByIdAndUpdate")
+			consoleLogSpy = jest.spyOn(console, "log")
             fillOrderStatusRequestAndResponse(false)
             jest.clearAllMocks()
             orderStatusFindByIdAndUpdateSpy.mockClear()
