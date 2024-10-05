@@ -94,10 +94,13 @@ describe("For Create Category Controller", () => {
       categoryModel.findOne = jest.fn().mockRejectedValueOnce(unexpectedError);
       categoryModel.prototype.save = jest.fn();
 
+      const spy = jest.spyOn(console, "log").mockImplementationOnce(() => {});
+
       await createCategoryController(req, res);
 
       expect(categoryModel.findOne).toBeCalledWith({ name: "new category" });
       expect(categoryModel.prototype.save).toBeCalledTimes(0);
+      expect(spy).toHaveBeenCalledWith(unexpectedError);
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.send).toHaveBeenCalledWith({
         success: false,
@@ -117,10 +120,13 @@ describe("For Create Category Controller", () => {
         .fn()
         .mockRejectedValueOnce(unexpectedError);
 
+      const spy = jest.spyOn(console, "log").mockImplementationOnce(() => {});
+
       await createCategoryController(req, res);
 
       expect(categoryModel.findOne).toBeCalledWith({ name: "new category" });
       expect(categoryModel.prototype.save).toBeCalled();
+      expect(spy).toHaveBeenCalledWith(unexpectedError);
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.send).toHaveBeenCalledWith({
         success: false,
@@ -170,6 +176,8 @@ describe("For Update Category Controller", () => {
         .fn()
         .mockRejectedValueOnce(unexpectedError);
 
+      const spy = jest.spyOn(console, "log").mockImplementationOnce(() => {});
+
       await updateCategoryController(req, res);
 
       expect(categoryModel.findByIdAndUpdate).toBeCalledWith(
@@ -177,6 +185,7 @@ describe("For Update Category Controller", () => {
         updatedCategory,
         { new: true }
       );
+      expect(spy).toHaveBeenCalledWith(unexpectedError);
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.send).toHaveBeenCalledWith({
         success: false,
@@ -227,10 +236,12 @@ describe("For All Category Controller", () => {
     test("Returns message that an error occurred while getting all categories", async () => {
       let unexpectedError = new Error("An unexpected error occurred");
       categoryModel.find = jest.fn().mockRejectedValueOnce(unexpectedError);
+      const spy = jest.spyOn(console, "log").mockImplementationOnce(() => {});
 
       await categoryControlller(req, res);
 
       expect(categoryModel.find).toBeCalledWith({});
+      expect(spy).toHaveBeenCalledWith(unexpectedError);
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.send).toHaveBeenCalledWith({
         success: false,
@@ -277,12 +288,14 @@ describe("For Single Category Controller", () => {
     test("Returns message that an error occurred while getting single category", async () => {
       let unexpectedError = new Error("An unexpected error occurred");
       categoryModel.findOne = jest.fn().mockRejectedValueOnce(unexpectedError);
+      const spy = jest.spyOn(console, "log").mockImplementationOnce(() => {});
 
       await singleCategoryController(req, res);
 
       expect(categoryModel.findOne).toBeCalledWith({
         slug: "single-category",
       });
+      expect(spy).toHaveBeenCalledWith(unexpectedError);
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.send).toHaveBeenCalledWith({
         success: false,
@@ -323,10 +336,12 @@ describe("For Delete Category Controller", () => {
       categoryModel.findByIdAndDelete = jest
         .fn()
         .mockRejectedValueOnce(unexpectedError);
+      const spy = jest.spyOn(console, "log").mockImplementationOnce(() => {});
 
       await deleteCategoryCOntroller(req, res);
 
       expect(categoryModel.findByIdAndDelete).toBeCalledWith("1");
+      expect(spy).toHaveBeenCalledWith(unexpectedError);
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.send).toHaveBeenCalledWith({
         success: false,
