@@ -5,8 +5,10 @@ import { render, waitFor, screen } from "@testing-library/react";
 import '@testing-library/jest-dom/extend-expect';
 import Orders from "./Orders";
 import axios from 'axios';
+import toast from "react-hot-toast";
 
 jest.mock('axios');
+jest.mock('react-hot-toast');
 
 jest.mock("../../components/Layout", () => ({ title, children }) => (
     <>
@@ -115,6 +117,7 @@ describe("Orders Component", () => {
 
         await waitFor(() => {
             expect(axios.get).toHaveBeenCalledTimes(1);
+            expect(axios.get).toHaveBeenCalledWith("/api/v1/auth/orders");
             const rows = screen.getAllByRole("row");
             expect(rows).toHaveLength(2);
             
@@ -155,8 +158,37 @@ describe("Orders Component", () => {
 
         await waitFor(() => {
             expect(axios.get).toHaveBeenCalledTimes(1);
+            expect(axios.get).toHaveBeenCalledWith("/api/v1/auth/orders");
+            const rows = screen.queryAllByRole("row");
+            expect(rows).toHaveLength(0);
         });
 
+    });
+
+    it("should handle error when fetching orders", async () => {
+        axios.get.mockRejectedValueOnce(new Error("Failed to get user orders"));
+
+        const { getByText } = render(
+            <MemoryRouter initialEntries={["/dashboard/user/orders"]}>
+                <Routes>
+                    <Route path="/dashboard/user/orders" element={<Orders />} />
+                </Routes>
+            </MemoryRouter>
+        );
+
+        expect(getByText("All Orders")).toBeInTheDocument();
+
+        await waitFor(() => {
+            expect(axios.get).toHaveBeenCalledTimes(1);
+            expect(axios.get).toHaveBeenCalledWith("/api/v1/auth/orders");
+            expect(toast.error).toHaveBeenCalledWith("Failed to get user orders");
+
+            const rows = screen.queryAllByRole("row");
+            expect(rows).toHaveLength(0);
+            expect(getByText("All Orders")).toBeInTheDocument();
+        });
+
+        // Should inform user that there was an error
     });
 
 });

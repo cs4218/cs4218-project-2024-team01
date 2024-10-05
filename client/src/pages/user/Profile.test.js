@@ -290,11 +290,14 @@ describe("Profile Component", () => {
             address: "123 Woodlands Avenue 6"
         }
 
-        axios.put.mockResolvedValue({
+        let mockResolvedData = {
             data: {
-                error: "Password is required and 6 character long"
+                error: "Password is required and 6 character long",
+                errro: "Not supposed to use this"
             }
-        });
+        }
+
+        axios.put.mockResolvedValue(mockResolvedData);
 
         const { getByText, getByPlaceholderText } = render(
             <MemoryRouter initialEntries={["/dashboard/user/profile"]}>
@@ -315,7 +318,8 @@ describe("Profile Component", () => {
             expect(axios.put).toHaveBeenCalledWith("/api/v1/auth/profile", updatedMockUser);
         });
 
-        expect(toast.error).toHaveBeenCalledWith("Password is required and 6 character long");
+        expect(toast.error).not.toHaveBeenCalledWith("Something went wrong");
+        expect(toast.error).toHaveBeenCalledWith(mockResolvedData.data.error);
 
         // Does not display error message when it is available
 
