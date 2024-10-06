@@ -77,11 +77,6 @@ const fillProductFormAndMockResponse = (isValidRequest, hasPhoto, InvalidField) 
 
     jest.clearAllMocks();
 }
-
-jest.mock("../models/productModel.js");
-jest.mock('braintree');
-jest.mock("../models/categoryModel.js");
-jest.mock("../models/orderModel.js");
 const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 
 describe("Given that createProductController is called", () => {
