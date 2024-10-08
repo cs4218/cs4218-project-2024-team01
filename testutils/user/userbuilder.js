@@ -1,3 +1,5 @@
+import userModel from "../../models/userModel.js"
+
 export class UserBuilder {
 	constructor() {
 		this.userObj = {
@@ -48,5 +50,17 @@ export class UserBuilder {
 	
 	build() {
 		return this.userObj
+	}
+
+	buildUserModel() {
+		return new userModel({
+			name: this.userObj.name,
+			email: this.userObj.email,
+			phone: this.userObj.phone,
+			address: this.userObj.address,
+			answer: this.userObj.answer,
+			password: this.userObj.password,
+			role: this.userObj.role
+		})
 	}
 }
