@@ -9,7 +9,7 @@ const config = {
   transformIgnorePatterns: ["/node_modules/(?!(styleMock\\.js)$)"],
   setupFiles: ["./jest.setup.js"],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
-//   testPathIgnorePatterns: ["./client"],
+  testPathIgnorePatterns: ["./client/src/_site"],
   testMatch: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(test).[jt]s?(x)"],
 //   preset: 'ts-jest',
   testEnvironment: 'jsdom',
