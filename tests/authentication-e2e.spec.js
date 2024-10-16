@@ -33,19 +33,19 @@ test.describe('Register with valid credentials and login', () => {
 
   test("Should be able to register and login", async ({ page }) => {
     await page.goto('http://localhost:3000/register');
-    await page.getByPlaceholder('Enter Your Name').fill(testUser.name);
-    await page.getByPlaceholder('Enter Your Email').fill(testUser.email);
-    await page.getByPlaceholder('Enter Your Password').fill(testUser.password);
-    await page.getByPlaceholder('Enter Your Phone').fill(testUser.phone);
-    await page.getByPlaceholder('Enter Your Address').fill(testUser.address);
-    await page.getByPlaceholder('Enter Your DOB').fill('2000-01-01');
-    await page.getByPlaceholder('What is Your Favorite sports').fill(testUser.answer);
+    await page.fill('input#exampleInputName1', testUser.name);
+    await page.fill('input#exampleInputEmail1', testUser.email);
+    await page.fill('input#exampleInputPassword1', testUser.password);
+    await page.fill('input#exampleInputPhone1', testUser.phone);
+    await page.fill('input#exampleInputaddress1', testUser.address);
+    await page.fill('input#exampleInputDOB1', '2000-01-01');
+    await page.fill('input#exampleInputanswer1', testUser.answer);
     const registerButton = page.getByRole('button', { name: 'REGISTER' });
     await registerButton.click();
 
     await page.waitForURL('http://localhost:3000/login');
-    await page.getByPlaceholder('Enter Your Email').fill(testUser.email);
-    await page.getByPlaceholder('Enter Your Password').fill(testUser.password);
+    await page.fill('input#exampleInputEmail1', testUser.email);
+    await page.fill('input#exampleInputPassword1', testUser.password);
     await page.getByRole('button', { name: 'LOGIN' }).click();
 
     await expect(page).toHaveURL('http://localhost:3000/');
@@ -56,8 +56,8 @@ test.describe('Register with valid credentials and login', () => {
 test.describe('Login with invalid credentials and navigate to home page', () => {
   test("Should not be able to login and navigate to protected routes", async ({ page }) => {
     await page.goto('http://localhost:3000/login');
-    await page.getByPlaceholder('Enter Your Email').fill('invalid@test');
-    await page.getByPlaceholder('Enter Your Password').fill('invalid');
+    await page.fill('input#exampleInputEmail1', 'invalid@test');
+    await page.fill('input#exampleInputPassword1', 'invalid');
     await page.getByRole('button', { name: 'LOGIN' }).click();
     await expect(page.getByText('Something went wrong')).toBeVisible();
 
@@ -115,8 +115,8 @@ test.describe('Existing User tries to reset password', () => {
     await resetPasswordButton.click();
 
     await page.goto('http://localhost:3000/login');
-    await page.getByPlaceholder('Enter Your Email').fill(testUserModel.email);
-    await page.getByPlaceholder('Enter Your Password').fill(newPassword);
+    await page.fill('input#exampleInputEmail1', testUserModel.email);
+    await page.fill('input#exampleInputPassword1', newPassword);
     await page.getByRole('button', { name: 'LOGIN' }).click();
 
     await expect(page).toHaveURL('http://localhost:3000/');
@@ -155,8 +155,8 @@ test.describe('User Login and then navigate to protected routes and logout', () 
 
   test("Should be able to login and logout", async ({ page }) => {
     await page.goto('http://localhost:3000/login');
-    await page.getByPlaceholder('Enter Your Email').fill(testUserModel.email);
-    await page.getByPlaceholder('Enter Your Password').fill(password);
+    await page.fill('input#exampleInputEmail1', testUserModel.email);
+    await page.fill('input#exampleInputPassword1', password);
     await page.getByRole('button', { name: 'LOGIN' }).click();
 
     await expect(page.getByText('Something went wrong')).not.toBeVisible();
