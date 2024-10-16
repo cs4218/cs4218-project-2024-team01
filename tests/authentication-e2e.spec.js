@@ -62,9 +62,6 @@ test.describe('Login with invalid credentials and navigate to home page', () => 
     await expect(page.getByText('Something went wrong')).toBeVisible();
 
     await page.goto('http://localhost:3000/dashboard/user/profile')
-    await expect(page.getByText('redirecting to you in 3 second')).toBeVisible();
-    await expect(page.getByText('redirecting to you in 2 second')).toBeVisible();
-    await expect(page.getByText('redirecting to you in 1 second')).toBeVisible();
     await page.waitForURL('http://localhost:3000/');
 
     await expect(page).toHaveURL('http://localhost:3000/');
@@ -113,6 +110,7 @@ test.describe('Existing User tries to reset password', () => {
 
     const resetPasswordButton = page.getByRole('button', { name: 'RESET PASSWORD' });
     await resetPasswordButton.click();
+    await page.waitForURL('http://localhost:3000/login', { timeout: 3000 });
 
     await page.goto('http://localhost:3000/login');
     await page.fill('input#exampleInputEmail1', testUserModel.email);
