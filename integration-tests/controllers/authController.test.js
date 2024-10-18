@@ -143,7 +143,7 @@ describe("Update Profile Controller", () => {
 
         const updatedUser = new UserBuilder()
             .withName("Test User 124")
-            .withPassword("passw0rd123")
+            .withPhone("90000124")
             .build();
         
         const req = {
@@ -182,6 +182,12 @@ describe("Update Profile Controller", () => {
             expect(resArgs.success).toBe(false);
             expect(resArgs.message).toBe("Error WHile Update profile");
             expect(resArgs.error).toStrictEqual(new Error("Database Error"));
+
+            // Check to see if the user is not updated in the database
+            const user = await userModel.find({ _id: existingUser._id });
+            expect(user.name).not.toBe(updatedUser.name);
+            expect(user.phone).not.toBe(updatedUser.phone);
+
     
         });
     });
