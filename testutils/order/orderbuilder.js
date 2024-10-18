@@ -3,7 +3,7 @@ export class OrderBuilder {
         this.orderObj = {
             products: [],
             payment: {},
-            buyer: '123123',
+            buyer: "51bb793aca2ab77a3200000d",
             status: 'Not Process'
         }
     }

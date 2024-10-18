@@ -13,6 +13,11 @@ export class UserBuilder {
 			role: 0
 		}
 	}
+	withID(id) {
+		this.userObj._id = id
+		return this
+	}
+	
 	withName(name) {
 		this.userObj.name = name
 		return this
@@ -54,6 +59,7 @@ export class UserBuilder {
 
 	buildUserModel() {
 		return new userModel({
+			_id: this.userObj._id,
 			name: this.userObj.name,
 			email: this.userObj.email,
 			phone: this.userObj.phone,
