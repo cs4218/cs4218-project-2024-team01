@@ -1,4 +1,4 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from "@playwright/test";
 
 test('Visit Contact page', async ({ page }) => {
     // Go to the contact page after clicking on the contact link at bottom of page
@@ -11,6 +11,7 @@ test('Visit and check that Contact page is rendered correctly', async ({ page })
     // Navigate to the contact page
     await page.goto('http://localhost:3000/');
     await page.getByRole('link', { name: 'Contact' }).click();
+    await expect(page).toHaveURL('http://localhost:3000/contact');
 
     //Check that the header and subheader is present on the contact page
     const contactPageHeader = page.getByText('CONTACT US');

@@ -1,4 +1,4 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from "@playwright/test";
 
 // Flow for this e2e test: User starts from the home page, then proceed to search for an non-existing product.
 // The product is not found, and user navigates back to home page to see more details of an existing product,
@@ -27,6 +27,7 @@ test('Full E2E Flow', async ({ page }) => {
     await page.getByRole('link', { name: 'Home' }).click();
 
     // Assert that user is on the home page
+    await expect(page).toHaveURL('http://localhost:3000/');
     pageTitle = page.getByText('All Products');
     expect(pageTitle).toBeVisible();
 
@@ -67,6 +68,7 @@ test('Full E2E Flow', async ({ page }) => {
     // User then clicks on the contact link at the bottom of the page to find out more
     // on the contact details
     await page.getByRole('link', { name: 'Contact' }).click();
+    await expect(page).toHaveURL('http://localhost:3000/contact');
 
     //Check that the header and subheader is present on the contact page
     const contactPageHeader = page.getByText('CONTACT US');

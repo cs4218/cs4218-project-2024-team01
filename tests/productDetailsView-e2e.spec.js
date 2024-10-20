@@ -1,4 +1,4 @@
-const { test, expect } = require('@playwright/test');
+import { test, expect } from "@playwright/test";
 
 test('View Product Details page', async ({ page }) => {
     // Navigate to the product details page after clicking on "more details" button
