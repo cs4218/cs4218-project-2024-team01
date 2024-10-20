@@ -1,37 +1,38 @@
 const { test, expect } = require('@playwright/test');
 
-test('Product Details page', async ({ page }) => {
-
+test('View Product Details page', async ({ page }) => {
     // Navigate to the product details page after clicking on "more details" button
     await page.goto('http://localhost:3000/');
-    const productToInspect = page.locator('//h5[text()="Test"]/../..').first();
+    const productToInspect = page.locator('//h5[text()="Product One"]/../..').first();
     await productToInspect.locator('button:has-text("More Details")').click();
-    await expect(page).toHaveURL('http://localhost:3000/product/Test');
+    await expect(page).toHaveURL('http://localhost:3000/product/product-one');
 
     // Check that the product details are rendered correctly
     const productDetailsHeader = page.getByText('PRODUCT DETAILS');
-    const productName = page.getByText('Name : Test');
-    const productDescription = page.getByText('Description : Test');
-    const productPrice = page.getByText('Price :$1.00');
-    const productCategory = page.getByText('Category : Test');
+    const productName = page.getByText('Name : Product One');
+    const productDescription = page.getByText('Description : This is product 1');
+    const productPrice = page.getByText('Price').first();
+    const productCategory = page.getByText('Category : Category One');
     await expect(productDetailsHeader).toBeVisible();
     await expect(productName).toBeVisible();
     await expect(productDescription).toBeVisible();
+    await expect(productPrice).toContainText('Price :$10.00');
     await expect(productCategory).toBeVisible();
 
     // Navigate to the product details page of related products
-    const relatedProduct = page.locator('//h5[text()="Test2"]/../..');
+    const relatedProduct = page.locator('//h5[text()="Product Two"]/../..');
     await relatedProduct.locator('button:has-text("More Details")').click();
-    await expect(page).toHaveURL('http://localhost:3000/product/Test2');
+    await expect(page).toHaveURL('http://localhost:3000/product/product-two');
 
     // Check that the product details are rendered correctly
     const relatedProductDetailsHeader = page.getByText('PRODUCT DETAILS');
-    const relatedProductName = page.getByText('Name : Test2');
-    const relatedProductDescription = page.getByText('Description : Test2');
-    const relatedProductPrice = page.getByText('Price :$1.00');
-    const relatedProductCategory = page.getByText('Category : Test');
+    const relatedProductName = page.getByText('Name : Product Two');
+    const relatedProductDescription = page.getByText('Description : This is product 2');
+    const relatedProductPrice = page.getByText('Price').first();
+    const relatedProductCategory = page.getByText('Category : Category One');
     await expect(relatedProductDetailsHeader).toBeVisible();
     await expect(relatedProductName).toBeVisible();
     await expect(relatedProductDescription).toBeVisible();
+    await expect(relatedProductPrice).toContainText('Price :$20.00');
     await expect(relatedProductCategory).toBeVisible();
 });

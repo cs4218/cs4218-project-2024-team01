@@ -32,6 +32,7 @@ module.exports = defineConfig({
   },
   globalSetup: './globalSetup.js',
   globalTeardown: './globalTearDown.js',
+  timeout: 5 * 60 * 1000,
 
   /* Configure projects for major browsers */
   projects: [

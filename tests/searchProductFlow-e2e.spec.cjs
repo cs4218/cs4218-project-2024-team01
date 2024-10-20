@@ -17,9 +17,9 @@ test('Search page with no results', async ({ page }) => {
 });
 
 test('Search page with results', async ({ page }) => {
-    // Search for non-existing product
+    // Search for existing product
     await page.goto('http://localhost:3000/');
-    await page.getByLabel('Search').fill('Test2');
+    await page.getByLabel('Search').fill('Product One');
     await page.getByRole('button', { name: 'Search' }).click();
 
     // Navigate to search page and check that at least one result is found,
@@ -31,7 +31,7 @@ test('Search page with results', async ({ page }) => {
     expect(productSearchCount).toBeVisible();
 
     // Check that the product being searched is present on the page
-    const productsFound = page.locator('//h5[text()="Test2"]/..');
+    const productsFound = page.locator('//h5[text()="Product One"]/..');
     const moreDetailsButton = productsFound.locator('button:has-text("More Details")');
     const addToCartButton = productsFound.locator('button:has-text("ADD TO CART")');
     await expect(moreDetailsButton).toBeVisible();
