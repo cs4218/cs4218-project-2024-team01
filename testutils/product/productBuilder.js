@@ -14,11 +14,15 @@ export class ProductBuilder {
         }
     }
     withId(id) {
-        this.product._id = id;
-        return this
+        this.product._id = id
+        return this 
     }
     withName(name) {
         this.product.name = name
+        return this
+    }
+    withSlug(slug) {
+        this.product.slug = slug
         return this
     }
     withPrice(price) {
@@ -30,7 +34,7 @@ export class ProductBuilder {
         return this
     }
     withImage(image) {
-        this.product.image = image
+        this.product.photo = image
         return this
     }
     withCategory(category) {
