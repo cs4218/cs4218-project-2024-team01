@@ -1,11 +1,12 @@
-import { UserBuilder } from "./testutils/user/userbuilder";
-import { ProductBuilder } from "./testutils/product/productBuilder";
+import { UserBuilder } from "./testutils/user/userbuilder.js";
+import { ProductBuilder } from "./testutils/product/productBuilder.js";
 import { ObjectId } from "mongodb";
-import { hashPassword } from "./helpers/authHelper";
-import categoryModel from "./models/categoryModel";
-import productModel from "./models/productModel";
+import { hashPassword } from "./helpers/authHelper.js";
+import categoryModel from "./models/categoryModel.js";
+import productModel from "./models/productModel.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+
 
 dotenv.config();
 
@@ -17,6 +18,17 @@ const testUserModel = new UserBuilder()
   .withPhone("13090434")
   .withPassword("test123")
   .withRole(0)
+  .buildUserModel();
+
+const testAdminUserModel = new UserBuilder()
+  .withID(new ObjectId())
+  .withEmail("admin@admin.com")
+  .withName("Admin")
+  .withAnswer("Football")
+  .withAddress("Test Address")
+  .withPhone("13090434")
+  .withPassword("test123")
+  .withRole(1)
   .buildUserModel();
 
 const categories = [
@@ -66,7 +78,9 @@ async function globalSetup() {
   try {
     await mongoose.connect(process.env.MONGO_URL);
     testUserModel.password = await hashPassword(testUserModel.password);
+    testAdminUserModel.password = await hashPassword(testAdminUserModel.password);
     await testUserModel.save();
+    await testAdminUserModel.save();
     await categoryModel.insertMany(categories);
     await productModel.insertMany(products);
     await mongoose.connection.close();
