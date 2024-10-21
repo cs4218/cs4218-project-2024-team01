@@ -13,6 +13,13 @@ test('View Product Details page', async ({ page }) => {
     const productDescription = page.getByText('Description : This is product 1');
     const productPrice = page.getByText('Price').first();
     const productCategory = page.getByText('Category : Category One');
+
+    await productDetailsHeader.isVisible();
+    await productName.isVisible();
+    await productDescription.isVisible();
+    await productPrice.isVisible();
+    await productCategory.isVisible();
+
     await expect(productDetailsHeader).toBeVisible();
     await expect(productName).toBeVisible();
     await expect(productDescription).toBeVisible();
@@ -30,6 +37,13 @@ test('View Product Details page', async ({ page }) => {
     const relatedProductDescription = page.getByText('Description : This is product 2');
     const relatedProductPrice = page.getByText('Price').first();
     const relatedProductCategory = page.getByText('Category : Category One');
+
+    await relatedProductDetailsHeader.isVisible();
+    await relatedProductName.isVisible();
+    await relatedProductDescription.isVisible();
+    await relatedProductPrice.isVisible();
+    await relatedProductCategory.isVisible();
+
     await expect(relatedProductDetailsHeader).toBeVisible();
     await expect(relatedProductName).toBeVisible();
     await expect(relatedProductDescription).toBeVisible();
