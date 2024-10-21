@@ -15,10 +15,16 @@ test('Visit and check that Contact page is rendered correctly', async ({ page })
 
     //Check that the header and subheader is present on the contact page
     const contactPageHeader = page.getByText('CONTACT US');
-    const contactPageSubHeader = page.getByText('For any query or info about product, feel free to call anytime. We are available 24X7.')
+    const contactPageSubHeader = page.getByText('For any query or info about product, feel free to call anytime. We are available 24X7.');
     const contactPageEmail = page.getByText('www.help@ecommerceapp.com');
-    const contactPageNumber = page.getByText('012-3456789')
-    const contactPageTollFreeNumber = page.getByText('1800-0000-0000')
+    const contactPageNumber = page.getByText('012-3456789');
+    const contactPageTollFreeNumber = page.getByText('1800-0000-0000');
+    
+    await contactPageHeader.isVisible();
+    await contactPageSubHeader.isVisible();
+    await contactPageEmail.isVisible();
+    await contactPageNumber.isVisible();
+    await contactPageTollFreeNumber.isVisible();
 
     expect(contactPageHeader).toBeVisible();
     expect(contactPageSubHeader).toBeVisible();

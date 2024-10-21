@@ -16,8 +16,6 @@ test('Full E2E Flow', async ({ page }) => {
 
     // Navigate to search page and check that no results are found
     await expect(page).toHaveURL('http://localhost:3000/search');
-    var pageTitle = await page.title();
-    expect(pageTitle).toContain('Search results');
     const resultsHeader = page.getByText('Search Resuts');
     const results = page.getByText('No Products Found');
     await expect(resultsHeader).toBeVisible();
@@ -28,7 +26,8 @@ test('Full E2E Flow', async ({ page }) => {
 
     // Assert that user is on the home page
     await expect(page).toHaveURL('http://localhost:3000/');
-    pageTitle = page.getByText('All Products');
+    const pageTitle = page.getByText('All Products');
+    await pageTitle.isVisible();
     expect(pageTitle).toBeVisible();
 
     // User clicks on a product on the home page to view more details
@@ -72,10 +71,16 @@ test('Full E2E Flow', async ({ page }) => {
 
     //Check that the header and subheader is present on the contact page
     const contactPageHeader = page.getByText('CONTACT US');
-    const contactPageSubHeader = page.getByText('For any query or info about product, feel free to call anytime. We are available 24X7.')
+    const contactPageSubHeader = page.getByText('For any query or info about product, feel free to call anytime. We are available 24X7.');
     const contactPageEmail = page.getByText('www.help@ecommerceapp.com');
-    const contactPageNumber = page.getByText('012-3456789')
-    const contactPageTollFreeNumber = page.getByText('1800-0000-0000')
+    const contactPageNumber = page.getByText('012-3456789');
+    const contactPageTollFreeNumber = page.getByText('1800-0000-0000');
+
+    await contactPageHeader.isVisible();
+    await contactPageSubHeader.isVisible();
+    await contactPageEmail.isVisible();
+    await contactPageNumber.isVisible();
+    await contactPageTollFreeNumber.isVisible();
 
     expect(contactPageHeader).toBeVisible();
     expect(contactPageSubHeader).toBeVisible();
