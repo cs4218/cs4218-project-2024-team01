@@ -79,9 +79,11 @@ test.describe("Updating User Profile", () => {
         try {
             const userID = new ObjectId();
 
+            const userEmail = `${userID}@example.com`;
+
             let currUserModel = new UserBuilder()
                 .withID(userID)
-                .withEmail("TestUser4@example.com")
+                .withEmail(userEmail)
                 .withName("Test User 4")
                 .withAnswer("Tennis")
                 .withAddress("Test Address 4")
@@ -98,7 +100,7 @@ test.describe("Updating User Profile", () => {
 
 
             await page.goto("http://localhost:3000/login");
-            await page.getByPlaceholder("Enter Your Email ").fill("TestUser4@example.com");
+            await page.getByPlaceholder("Enter Your Email ").fill(userEmail);
             await page.getByPlaceholder("Enter Your Password").click();
             await page.getByPlaceholder("Enter Your Password").fill("test123");
             await page.getByRole("button", { name: "LOGIN" }).click();
@@ -117,7 +119,7 @@ test.describe("Updating User Profile", () => {
             await page.getByRole("link", { name: "LOGOUT" }).click();
         
             await page.waitForURL('http://localhost:3000/login');
-            await page.getByPlaceholder("Enter Your Email ").fill("TestUser4@example.com");
+            await page.getByPlaceholder("Enter Your Email ").fill(userEmail);
             await page.getByPlaceholder("Enter Your Password").click();
             await page.getByPlaceholder("Enter Your Password").fill("test456");
         
