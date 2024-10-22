@@ -63,7 +63,7 @@ test("User checkouts from Cart Page", async ({ page }) => {
     await page.getByRole("button", { name: "Make Payment" }).click();
 
     await expect(page).toHaveURL("http://localhost:3000/dashboard/user/orders");
-    expect(page.getByRole("row", { name: "1 Not Process Test User a few seconds ago" })).toBeVisible();
+    await expect(page.getByRole("row", { name: "1 Not Process Test User a few seconds ago" })).toBeVisible();
 
     await expect(page.getByText("Product One")).toBeVisible();
     await expect(page.getByText("This is product 1")).toBeVisible();
