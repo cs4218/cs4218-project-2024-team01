@@ -6,6 +6,8 @@ import categoryModel from "./models/categoryModel.js";
 import productModel from "./models/productModel.js";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import orderModel from "./models/orderModel.js";
+import { OrderBuilder } from "./testutils/order/orderbuilder.js";
 
 
 dotenv.config();
@@ -16,6 +18,28 @@ const testUserModel = new UserBuilder()
   .withAnswer("Football")
   .withAddress("Test Address")
   .withPhone("13090434")
+  .withPassword("test123")
+  .withRole(0)
+  .buildUserModel();
+
+const testUserModel2 = new UserBuilder()
+  .withID(new ObjectId())
+  .withEmail("TestUser2@example.com")
+  .withName("Test User 2")
+  .withAnswer("Basketball")
+  .withAddress("Test Address 2")
+  .withPhone("12345678")
+  .withPassword("test123")
+  .withRole(0)
+  .buildUserModel();
+
+const testUserModel3 = new UserBuilder()
+  .withID(new ObjectId())
+  .withEmail("TestUser3@example.com")
+  .withName("Test User 3")
+  .withAnswer("Baseball")
+  .withAddress("Test Address 3")
+  .withPhone("12345678")
   .withPassword("test123")
   .withRole(0)
   .buildUserModel();
@@ -74,15 +98,33 @@ const products = [
     .build(),
 ];
 
+const orders = [
+  new OrderBuilder()
+    .withId(new ObjectId())
+    .withBuyer(testUserModel3._id)
+    .withStatus("Not Process")
+    .withPayment({ success: true})
+    .withProducts([
+      products[2]._id,
+    ])
+    .build(),
+  ];
+
+
 async function globalSetup() {
   try {
     await mongoose.connect(process.env.MONGO_URL);
     testUserModel.password = await hashPassword(testUserModel.password);
+    testUserModel2.password = await hashPassword(testUserModel2.password);
+    testUserModel3.password = await hashPassword(testUserModel3.password);
     testAdminUserModel.password = await hashPassword(testAdminUserModel.password);
     await testUserModel.save();
+    await testUserModel2.save();
+    await testUserModel3.save();
     await testAdminUserModel.save();
     await categoryModel.insertMany(categories);
     await productModel.insertMany(products);
+    await orderModel.insertMany(orders);
     await mongoose.connection.close();
   } catch (error) {
     console.log(`Error in Mongodb ${error}`);
