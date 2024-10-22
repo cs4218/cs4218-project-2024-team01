@@ -81,10 +81,10 @@ test.describe("Updating User Profile", () => {
 
             let currUserModel = new UserBuilder()
                 .withID(userID)
-                .withEmail("TestUser3@example.com")
-                .withName("Test User 3")
+                .withEmail("TestUser4@example.com")
+                .withName("Test User 4")
                 .withAnswer("Tennis")
-                .withAddress("Test Address 3")
+                .withAddress("Test Address 4")
                 .withPhone("12345678")
                 .withPassword("test123")
                 .withRole(0)
@@ -98,13 +98,13 @@ test.describe("Updating User Profile", () => {
 
 
             await page.goto("http://localhost:3000/login");
-            await page.getByPlaceholder("Enter Your Email ").fill("TestUser3@example.com");
+            await page.getByPlaceholder("Enter Your Email ").fill("TestUser4@example.com");
             await page.getByPlaceholder("Enter Your Password").click();
             await page.getByPlaceholder("Enter Your Password").fill("test123");
             await page.getByRole("button", { name: "LOGIN" }).click();
         
             await page.waitForURL("http://localhost:3000");
-            await page.getByRole("button", { name: "TEST USER 3" }).click();
+            await page.getByRole("button", { name: "TEST USER 4" }).click();
             await page.getByRole("link", { name: "DASHBOARD" }).click();
             await page.getByRole("link", { name: "Profile" }).click();
             await page.goto("http://localhost:3000/dashboard/user/profile");
@@ -113,11 +113,11 @@ test.describe("Updating User Profile", () => {
             await page.getByRole("button", { name: "UPDATE" }).click();
             await expect(page.getByText("Profile Updated Successfully")).toBeVisible();
         
-            await page.getByRole("button", { name: "TEST USER 3" }).click();
+            await page.getByRole("button", { name: "TEST USER 4" }).click();
             await page.getByRole("link", { name: "LOGOUT" }).click();
         
             await page.waitForURL('http://localhost:3000/login');
-            await page.getByPlaceholder("Enter Your Email ").fill("TestUser3@example.com");
+            await page.getByPlaceholder("Enter Your Email ").fill("TestUser4@example.com");
             await page.getByPlaceholder("Enter Your Password").click();
             await page.getByPlaceholder("Enter Your Password").fill("test456");
         
@@ -143,12 +143,12 @@ test.describe("User Orders", () => {
     test("User is able to see his orders", async ({ page }) => {
 
         await page.goto("http://localhost:3000/login");
-        await page.getByPlaceholder("Enter Your Email ").fill("TestUser@example.com");
+        await page.getByPlaceholder("Enter Your Email ").fill("TestUser3@example.com");
         await page.getByPlaceholder("Enter Your Password").click();
         await page.getByPlaceholder("Enter Your Password").fill("test123");
         await page.getByRole("button", { name: "LOGIN" }).click();
     
-        await page.getByRole("button", { name: "TEST USER" }).click();
+        await page.getByRole("button", { name: "TEST USER 3" }).click();
         await page.getByRole("link", { name: "DASHBOARD" }).click();
         await page.getByRole("link", { name: "Orders" }).click();
         await page.waitForURL("http://localhost:3000/dashboard/user/orders");
@@ -169,7 +169,7 @@ test.describe("User Orders", () => {
         await expect(headerRow.getByRole("columnheader", { name: "Quantity" })).toBeVisible();
         
         
-        const orderRow = page.getByRole("row", { name: "1 Not Process Test User a few seconds ago Success 1" });
+        const orderRow = page.getByRole("row", { name: "1 Not Process Test User 3 a few seconds ago Success 1" });
         expect(orderRow).toBeVisible();
 
         await expect(page.getByText("Product Three")).toBeVisible();

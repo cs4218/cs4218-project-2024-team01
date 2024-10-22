@@ -33,6 +33,17 @@ const testUserModel2 = new UserBuilder()
   .withRole(0)
   .buildUserModel();
 
+const testUserModel3 = new UserBuilder()
+  .withID(new ObjectId())
+  .withEmail("TestUser3@example.com")
+  .withName("Test User 3")
+  .withAnswer("Baseball")
+  .withAddress("Test Address 3")
+  .withPhone("12345678")
+  .withPassword("test123")
+  .withRole(0)
+  .buildUserModel();
+
 const testAdminUserModel = new UserBuilder()
   .withID(new ObjectId())
   .withEmail("admin@admin.com")
@@ -90,7 +101,7 @@ const products = [
 const orders = [
   new OrderBuilder()
     .withId(new ObjectId())
-    .withBuyer(testUserModel._id)
+    .withBuyer(testUserModel3._id)
     .withStatus("Not Process")
     .withPayment({ success: true})
     .withProducts([
@@ -105,9 +116,11 @@ async function globalSetup() {
     await mongoose.connect(process.env.MONGO_URL);
     testUserModel.password = await hashPassword(testUserModel.password);
     testUserModel2.password = await hashPassword(testUserModel2.password);
+    testUserModel3.password = await hashPassword(testUserModel3.password);
     testAdminUserModel.password = await hashPassword(testAdminUserModel.password);
     await testUserModel.save();
     await testUserModel2.save();
+    await testUserModel3.save();
     await testAdminUserModel.save();
     await categoryModel.insertMany(categories);
     await productModel.insertMany(products);
