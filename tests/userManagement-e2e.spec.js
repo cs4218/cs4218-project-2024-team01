@@ -28,7 +28,7 @@ test.describe("Updating User Profile", () => {
             await userModel.findOneAndUpdate({ email: testUserModel2.email }, { name: "Test User 2", password: hashedPassword});
             await mongoose.connection.close();
         } catch (error) {
-            console.log(`Error in Mongodb ${error}`);
+            console.log(`Error in Mongodb 1 ${error}`);
         }
     });
 
@@ -76,8 +76,8 @@ test.describe("Updating User Profile", () => {
     });
     
     test("User update his profile with a valid password", async ({ page }) => {
+        const userID = new ObjectId();
         try {
-            const userID = new ObjectId();
 
             const userEmail = `${userID}@example.com`;
 
@@ -126,12 +126,10 @@ test.describe("Updating User Profile", () => {
             await page.getByRole('button', { name: 'LOGIN' }).click();
             await expect(page).toHaveURL('http://localhost:3000/');
             await expect(page).toHaveTitle("ALL Products - Best offers");
-            
+
+        } finally {
             await userModel.deleteOne({ _id: userID });
             await mongoose.connection.close();
-
-        } catch (error) {
-            console.log(`${error}`);
         }
         
     });
