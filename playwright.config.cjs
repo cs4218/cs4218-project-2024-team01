@@ -31,7 +31,7 @@ module.exports = defineConfig({
     trace: 'on-first-retry',
   },
   globalSetup: './globalSetup.js',
-  globalTeardown: './globalTearDown.js',
+  globalTeardown: './globalTeardown.js',
 
   /* Configure projects for major browsers */
   projects: [
