@@ -30,13 +30,13 @@ describe("Product Controller integration test with MongoDB", () => {
             name: "Test Category",
             _id: categoryId
         });
-    });
+    }, 20000);
 
     afterAll(async () => {
         await mongoose.connection.dropDatabase();
         await mongoose.connection.close();
         await mongoServer.stop();
-    });
+    }, 20000);
 
     describe("Integration tests for createProductController", () => {
         beforeEach(async () => {
