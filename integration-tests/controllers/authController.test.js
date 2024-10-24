@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, test, it, jest } from "@jest/globals";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { UserBuilder } from "../../testutils/user/userbuilder";
 import { comparePassword, hashPassword } from "../../helpers/authHelper";
-import { UserBuilder } from "../../testutils/user/userbuilder";
 import { loginController, registerController, forgotPasswordController, updateProfileController, getOrdersController, getAllOrdersController, orderStatusController} from "../../controllers/authController";
 import mongoose, { Types } from "mongoose";
 import userModel from "../../models/userModel";

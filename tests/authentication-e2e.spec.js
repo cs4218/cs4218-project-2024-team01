@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import dotenv from "dotenv";
 import { UserBuilder } from '../testutils/user/userbuilder';
 import userModel from "../models/userModel";
-import { hashPassword } from "../helpers/authHelper";
 
 dotenv.config();
 
@@ -77,27 +76,6 @@ test.describe('Existing User tries to reset password', () => {
     .withPhone('1234567890').withRole(0)
     .buildUserModel();
 
-  test.beforeEach('Remove and Add Test User before Test', async () => {
-    try {
-      await mongoose.connect(process.env.MONGO_URL);
-      await userModel.deleteOne({ email: testUserModel.email });
-      testUserModel.password = await hashPassword(originalPassword);
-      await testUserModel.save();
-      await mongoose.connection.close();
-    } catch (error) {
-      console.log(`Error in Mongodb ${error}`);
-    }
-  });
-  test.afterEach('Remove Test User after Test', async () => {
-    try {
-      await mongoose.connect(process.env.MONGO_URL);
-      await userModel.deleteOne({ email: testUserModel.email });
-      await mongoose.connection.close();
-    } catch (error) {
-      console.log(`Error in Mongodb ${error}`);
-    }
-  });
-
   test("Should be able to reset password and Login", async ({ page }) => {
     await page.goto('http://localhost:3000/login');
     await page.getByRole('button', { name: 'FORGET PASSWORD' }).click();
@@ -128,28 +106,6 @@ test.describe('User Login and then navigate to protected routes and logout', () 
     .withPhone('1234567890').withRole(0)
     .buildUserModel();
   const password = 'maryjane123';
-
-  test.beforeEach('Remove and Add User before Test', async () => {
-    try {
-      await mongoose.connect(process.env.MONGO_URL);
-      await userModel.deleteOne({ email: testUserModel.email });
-
-      testUserModel.password = await hashPassword(password);
-      await testUserModel.save();
-      await mongoose.connection.close();
-    } catch (error) {
-      console.log(`Error in Mongodb ${error}`);
-    }
-  });
-  test.afterEach('Remove Test User after Test', async () => {
-    try {
-      await mongoose.connect(process.env.MONGO_URL);
-      await userModel.deleteOne({ email: testUserModel.email });
-      await mongoose.connection.close();
-    } catch (error) {
-      console.log(`Error in Mongodb ${error}`);
-    }
-  });
 
   test("Should be able to login and logout", async ({ page }) => {
     await page.goto('http://localhost:3000/login');
