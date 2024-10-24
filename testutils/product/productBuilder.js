@@ -8,14 +8,18 @@ export class ProductBuilder {
             category: {
                 name: "Test Category",
                 _id: "123"
-            }, 
-            quantity: 10, 
+            },
+            quantity: 10,
             shipping: true,
         }
     }
     withId(id) {
         this.product._id = id
-        return this 
+        return this
+    }
+    withCategoryId(categoryId) {
+        this.product.category._id = categoryId
+        return this
     }
     withName(name) {
         this.product.name = name
