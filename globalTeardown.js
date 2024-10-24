@@ -12,7 +12,10 @@ async function globalTeardown() {
     await mongoose.connect(process.env.MONGO_URL);
     const user2 = await userModel.findOne({ email: "TestUser2@example.com" });
     const user3 = await userModel.findOne({ email: "TestUser3@example.com" });
-    await userModel.deleteMany({ email: { $in: ["TestUser@example.com", "TestUser2@example.com", "TestUser3@example.com",  "admin@admin.com"] }});
+    await userModel.deleteMany({ email: 
+      { 
+        $in: ["TestUser@example.com", "TestUser2@example.com", "TestUser3@example.com",  "admin@admin.com", "DarrenJames@test.com", "MaryJane@test.com"] 
+      }});
     await categoryModel.deleteMany({ slug: { $in: ['category-one', 'category-two', 'category-three', 'category-four'] }});
     await productModel.deleteMany({ slug: { $in: ['product-one', 'product-two', 'product-three', 'Product-Four'] }});
     await orderModel.deleteMany({ buyer: { $in: [user2._id, user3._id] }});
