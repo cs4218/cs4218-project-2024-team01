@@ -1,15 +1,15 @@
 export class ProductBuilder {
     constructor() {
         this.product = {
-            _id: "123123",
+            _id: 1231,
             name: "test",
             price: 100,
             description: "test description",
             category: {
                 name: "Test Category",
-                _id: "123"
-            },
-            quantity: 10,
+                _id: 123
+            }, 
+            quantity: 10, 
             shipping: true,
         }
     }
@@ -51,6 +51,10 @@ export class ProductBuilder {
     }
     withShipping(shipping) {
         this.product.shipping = shipping
+        return this
+    }
+    withCategoryId(categoryId) {
+        this.product.category._id = categoryId
         return this
     }
     build() {
