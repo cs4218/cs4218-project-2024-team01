@@ -32,7 +32,7 @@ module.exports = defineConfig({
     screenshot: 'only-on-failure',
   },
   globalSetup: './globalSetup.js',
-  globalTeardown: './globalTearDown.js',
+  globalTeardown: './globalTeardown.js',
   timeout: 5 * 60 * 1000,
   expect: {
     timeout: 10 * 1000,
