@@ -12,3 +12,56 @@ If your group number is a single digit, i.e 2024-Team1 is fine as well.)
 The other members in the team will be able to see an existing team with your team number in the “Join an existing team” section. Click Join.
 
 ## Step 3. All of you should be able to see the acceptance page. Click on the assignment link to see the project on GitHub.
+
+## Contributions for MS2 
+### Tang Hau Chong 
+- Setup SonarQube Analysis and Jest Code Coverage 
+- Authentication e2e flows
+- Authenticated related integration tests 
+ 
+Files edited: 
+- models\userModel.test.js
+- globalSetup.js
+- globalTeardown.js
+- integration-tests\controllers\authController.test.js 
+- tests\authentication-e2e.spec.js 
+ 
+### Wee Ming Qing 
+- Search Page, product details, contact page navigation e2e flows 
+- Products related integration tests
+
+Files edited:
+- integration-tests\controllers\productController.test.js
+- tests\contactPageVisit-e2e.spec.js
+- tests\fullE2EFlowWithRelatedComponents.spec.js
+- tests\productDetailsView-e2e.spec.js
+- tests\searchProductFlow-e2e.spec.js
+ 
+### Lim Hong Wei, Jovon 
+- Cart Page Login, Cart Checkout, Category Navigation e2e flows 
+- Category related integration tests 
+ 
+Files edited: 
+- integration-tests\controllers\categoryController.test.js 
+- tests\cartPageLogin-e2e.spec.js 
+- tests\cartPageCheckout-e2e.spec.js 
+- tests\homePageCategoryNavigation-e2e.spec.js 
+ 
+### Ong Wen Pin 
+- Update profile and user order e2e flows 
+- Update profile and user order integration tests 
+ 
+Files edited: 
+- tests\userManagement-e2e.spec.js 
+- integration-tests\controllers\authController.test.js
+
+### Aloysius Neo Ze En
+- Admin Dashboard Login, Admin Create Category, Admin Create Product e2e flows
+-  Admin tasks related and product count integration tests
+ 
+Files edited: 
+- tests\adminDashboardCreateCategory-e2e.spec.js
+- tests\adminDashboardCreateProduct-e2e.spec.js
+- tests\adminDashboardLogin-e2e.spec.js
+- integration-tests\controllers\authController.test.js
+- integration-tests\controllers\productController.test.js
